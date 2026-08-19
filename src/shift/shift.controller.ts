@@ -54,4 +54,9 @@ export class ShiftController {
   async getApplicants(@Param('id') id: string) {
     return this.shiftService.getApplicantsForShift(id);
   }
+
+  @Get('upcoming/:professionalId')
+  async getUpcomingShifts(@Param('professionalId') professionalId: string) {
+    return this.shiftService.getUpcomingShiftsForProfessional(professionalId);
+  }
 }

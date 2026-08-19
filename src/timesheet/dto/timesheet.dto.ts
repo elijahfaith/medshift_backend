@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
 
 export class CreateTimesheetDto {
   @IsString()
@@ -6,6 +6,14 @@ export class CreateTimesheetDto {
 
   @IsString()
   professionalId: string;
+
+  @IsString()
+  accessCode: string;
+}
+
+export class ClockOutDto {
+  @IsString()
+  accessCode: string;
 }
 
 export class UpdateTimesheetStatusDto {

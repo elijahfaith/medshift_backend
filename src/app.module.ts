@@ -14,6 +14,8 @@ import { VerificationModule } from './verification/verification.module';
 import { TrackingModule } from './tracking/tracking.module';
 import { WalletModule } from './wallet/wallet.module';
 import { JwtStrategy } from './auth/guards/jwt.strategy';
+import { ReviewModule } from './review/review.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { JwtStrategy } from './auth/guards/jwt.strategy';
     VerificationModule,
     TrackingModule,
     WalletModule,
+    ReviewModule,
+    ReportModule,
   ],
   controllers: [AppController],
   providers: [

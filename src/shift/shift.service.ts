@@ -18,7 +18,14 @@ export class ShiftService {
   ) {}
 
   async createShift(createDto: CreateShiftDto) {
-    const newShift = new this.shiftModel(createDto);
+    const accessCode = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit code
+    const qrCodeData = `SHIFT-${Date.now().toString(36)}-${accessCode}`;
+
+    const newShift = new this.shiftModel({
+      ...createDto,
+      accessCode,
+      qrCodeData,
+    });
     return newShift.save();
   }
 
@@ -66,6 +73,14 @@ export class ShiftService {
     return this.applicantModel
       .find({ shiftId: new Types.ObjectId(shiftId) })
       .populate('professionalId')
+      .exec();
+  }
+
+  async getUpcomingShiftsForProfessional(professionalId: string) {
+    // Return shifts where professional has applied. In a real app, you might filter by status: 'Approved'
+    return this.applicantModel
+      .find({ professionalId: new Types.ObjectId(professionalId) })
+      .populate('shiftId')
       .exec();
   }
 

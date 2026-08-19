@@ -53,6 +53,12 @@ export class Shift {
     type: string;
     coordinates: number[];
   };
+
+  @Prop()
+  accessCode: string;
+
+  @Prop()
+  qrCodeData: string;
 }
 
 export const ShiftSchema = SchemaFactory.createForClass(Shift);

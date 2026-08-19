@@ -1,9 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Timesheet, TimesheetDocument } from './schemas/timesheet.schema';
+import { Shift, ShiftDocument } from '../shift/schemas/shift.schema';
 import {
   CreateTimesheetDto,
+  ClockOutDto,
   UpdateTimesheetStatusDto,
 } from './dto/timesheet.dto';
 import { PaginationQueryDto } from '../common/dto/pagination.dto';
@@ -13,9 +15,19 @@ export class TimesheetService {
   constructor(
     @InjectModel(Timesheet.name)
     private timesheetModel: Model<TimesheetDocument>,
+    @InjectModel(Shift.name)
+    private shiftModel: Model<ShiftDocument>,
   ) {}
 
   async clockIn(createDto: CreateTimesheetDto) {
+    const shift = await this.shiftModel.findById(createDto.shiftId).exec();
+    if (!shift) throw new NotFoundException('Shift not found');
+    
+    // Check if accessCode matches either the generated code or QR code data
+    if (shift.accessCode !== createDto.accessCode && shift.qrCodeData !== createDto.accessCode) {
+      throw new BadRequestException('Invalid Access Code or QR Code');
+    }
+
     const newTimesheet = new this.timesheetModel({
       ...createDto,
       clockInTime: new Date(),
@@ -23,9 +35,16 @@ export class TimesheetService {
     return newTimesheet.save();
   }
 
-  async clockOut(id: string) {
+  async clockOut(id: string, clockOutDto: ClockOutDto) {
     const timesheet = await this.timesheetModel.findById(id).exec();
     if (!timesheet) throw new NotFoundException('Timesheet not found');
+
+    const shift = await this.shiftModel.findById(timesheet.shiftId).exec();
+    if (!shift) throw new NotFoundException('Shift not found');
+
+    if (shift.accessCode !== clockOutDto.accessCode && shift.qrCodeData !== clockOutDto.accessCode) {
+      throw new BadRequestException('Invalid Access Code or QR Code');
+    }
 
     timesheet.clockOutTime = new Date();
     // Simplified hours calculation logic

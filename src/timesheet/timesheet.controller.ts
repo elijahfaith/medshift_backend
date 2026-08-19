@@ -2,6 +2,7 @@ import { Controller, Post, Get, Put, Param, Body, Query } from '@nestjs/common';
 import { TimesheetService } from './timesheet.service';
 import {
   CreateTimesheetDto,
+  ClockOutDto,
   UpdateTimesheetStatusDto,
 } from './dto/timesheet.dto';
 import { PaginationQueryDto } from '../common/dto/pagination.dto';
@@ -16,8 +17,8 @@ export class TimesheetController {
   }
 
   @Post(':id/clock-out')
-  async clockOut(@Param('id') id: string) {
-    return this.timesheetService.clockOut(id);
+  async clockOut(@Param('id') id: string, @Body() clockOutDto: ClockOutDto) {
+    return this.timesheetService.clockOut(id, clockOutDto);
   }
 
   @Get('professional/:id')
