@@ -51,12 +51,16 @@ export class InstitutionAuthService {
     };
     const token = this.jwtService.sign(payload);
 
+    // Temporary development OTP since email is not yet configured
+    const devOtp = '123456';
+
     return {
       Token: token,
-      UserId: newInst._id,
+      InstitutionId: newInst._id,
       Email: newInst.email,
       Name: newInst.name,
       Status: newInst.status,
+      OTP: devOtp,
     };
   }
 
@@ -71,7 +75,7 @@ export class InstitutionAuthService {
       throw new UnauthorizedException('Invalid credentials.');
     }
 
-    if (user.status === 'Suspended' || user.status === 'Deactivated') {
+    if (inst.status === 'Suspended' || inst.status === 'Deactivated') {
       throw new UnauthorizedException('Account is suspended or deactivated.');
     }
 

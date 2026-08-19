@@ -49,6 +49,9 @@ export class UserAuthService {
     };
     const token = this.jwtService.sign(payload);
 
+    // Temporary development OTP since email is not yet configured
+    const devOtp = '123456';
+
     return {
       Token: token,
       UserId: newUser._id,
@@ -56,6 +59,7 @@ export class UserAuthService {
       FirstName: newUser.firstName,
       LastName: newUser.lastName,
       Status: newUser.status,
+      OTP: devOtp, // For mobile app to use for verification testing
     };
   }
 
