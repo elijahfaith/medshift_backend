@@ -25,8 +25,8 @@ export class AdminRegisterDto {
   phone: string;
 
   @IsNotEmpty()
-  @MinLength(12, { message: 'Password must be at least 12 characters.' })
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{12,}$/, {
+  @MinLength(8, { message: 'Password must be at least 8 characters.' })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/, {
     message:
       'Password must have at least one lowercase, one uppercase, one number and one special character.',
   })
@@ -49,4 +49,38 @@ export class AdminLoginDto {
   @IsOptional()
   @IsString()
   clientType: string;
+}
+
+export class VerifyOtpDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  otp: string;
+}
+
+export class ForgotPasswordDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+}
+
+export class ResetPasswordDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  otp: string;
+
+  @IsNotEmpty()
+  @MinLength(8, { message: 'Password must be at least 8 characters.' })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/, {
+    message:
+      'Password must have at least one lowercase, one uppercase, one number and one special character.',
+  })
+  newPassword: string;
 }

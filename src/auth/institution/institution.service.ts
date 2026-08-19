@@ -11,6 +11,9 @@ import { Institution, InstitutionDocument } from './schemas/institution.schema';
 import {
   InstitutionRegisterDto,
   InstitutionLoginDto,
+  VerifyOtpDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
 } from './dto/institution.dto';
 
 @Injectable()
@@ -32,6 +35,10 @@ export class InstitutionAuthService {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(registerDto.password, salt);
 
+    const devOtp = '123456';
+    const otpExpiry = new Date();
+    otpExpiry.setMinutes(otpExpiry.getMinutes() + 10);
+
     const newInst = new this.institutionModel({
       name: registerDto.name,
       facilityType: registerDto.facilityType,
@@ -39,6 +46,8 @@ export class InstitutionAuthService {
       passwordHash,
       address: 'Pending',
       status: 'PendingVerification',
+      otp: devOtp,
+      otpExpiry,
     });
 
     await newInst.save();
@@ -51,9 +60,6 @@ export class InstitutionAuthService {
     };
     const token = this.jwtService.sign(payload);
 
-    // Temporary development OTP since email is not yet configured
-    const devOtp = '123456';
-
     return {
       Token: token,
       InstitutionId: newInst._id,
@@ -62,6 +68,80 @@ export class InstitutionAuthService {
       Status: newInst.status,
       OTP: devOtp,
     };
+  }
+
+  async verifyOtp(verifyOtpDto: VerifyOtpDto) {
+    const inst = await this.institutionModel.findOne({ email: verifyOtpDto.email });
+    if (!inst) {
+      throw new BadRequestException('Invalid email or OTP');
+    }
+
+    if (inst.otp !== verifyOtpDto.otp || !inst.otpExpiry || inst.otpExpiry < new Date()) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    inst.isVerified = true;
+    inst.status = 'Active';
+    inst.otp = undefined;
+    inst.otpExpiry = undefined;
+    await inst.save();
+
+    const payload = {
+      sub: inst._id,
+      email: inst.email,
+      role: 'institution',
+    };
+    const token = this.jwtService.sign(payload);
+
+    return {
+      message: 'Email verified successfully',
+      Token: token,
+      InstitutionId: inst._id,
+      Email: inst.email,
+      Name: inst.name,
+      Status: inst.status,
+    };
+  }
+
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    const inst = await this.institutionModel.findOne({ email: forgotPasswordDto.email });
+    if (!inst) {
+      return { message: 'If an account with that email exists, an OTP has been sent.' };
+    }
+
+    const devOtp = '123456';
+    const otpExpiry = new Date();
+    otpExpiry.setMinutes(otpExpiry.getMinutes() + 10);
+
+    inst.otp = devOtp;
+    inst.otpExpiry = otpExpiry;
+    await inst.save();
+
+    return { 
+      message: 'OTP sent successfully',
+      OTP: devOtp 
+    };
+  }
+
+  async resetPassword(resetDto: ResetPasswordDto) {
+    const inst = await this.institutionModel.findOne({ email: resetDto.email });
+    if (!inst) {
+      throw new BadRequestException('Invalid email or OTP');
+    }
+
+    if (inst.otp !== resetDto.otp || !inst.otpExpiry || inst.otpExpiry < new Date()) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(resetDto.newPassword, salt);
+
+    inst.passwordHash = passwordHash;
+    inst.otp = undefined;
+    inst.otpExpiry = undefined;
+    await inst.save();
+
+    return { message: 'Password reset successfully' };
   }
 
   async login(loginDto: InstitutionLoginDto) {

@@ -73,7 +73,7 @@ export class UserAuthService {
       throw new BadRequestException('Invalid email or OTP');
     }
 
-    if (user.otp !== verifyOtpDto.otp || user.otpExpiry < new Date()) {
+    if (user.otp !== verifyOtpDto.otp || !user.otpExpiry || user.otpExpiry < new Date()) {
       throw new BadRequestException('Invalid or expired OTP');
     }
 
@@ -128,7 +128,7 @@ export class UserAuthService {
       throw new BadRequestException('Invalid email or OTP');
     }
 
-    if (user.otp !== resetDto.otp || user.otpExpiry < new Date()) {
+    if (user.otp !== resetDto.otp || !user.otpExpiry || user.otpExpiry < new Date()) {
       throw new BadRequestException('Invalid or expired OTP');
     }
 

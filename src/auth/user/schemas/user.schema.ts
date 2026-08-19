@@ -45,10 +45,10 @@ export class User {
   status: string; // 'PendingVerification', 'Active', 'Suspended', 'Deactivated'
 
   @Prop()
-  otp: string;
+  otp?: string;
 
   @Prop()
-  otpExpiry: Date;
+  otpExpiry?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

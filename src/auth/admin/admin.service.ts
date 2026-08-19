@@ -8,7 +8,7 @@ import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Admin, AdminDocument } from './schemas/admin.schema';
-import { AdminRegisterDto, AdminLoginDto } from './dto/admin.dto';
+import { AdminRegisterDto, AdminLoginDto, VerifyOtpDto, ForgotPasswordDto, ResetPasswordDto } from './dto/admin.dto';
 
 @Injectable()
 export class AdminAuthService {
@@ -28,12 +28,18 @@ export class AdminAuthService {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(registerDto.password, salt);
 
+    const devOtp = '123456';
+    const otpExpiry = new Date();
+    otpExpiry.setMinutes(otpExpiry.getMinutes() + 10);
+
     const newAdmin = new this.adminModel({
       firstName: registerDto.firstName,
       lastName: registerDto.lastName,
       email: registerDto.email,
       passwordHash,
       status: 'Active',
+      otp: devOtp,
+      otpExpiry,
     });
 
     await newAdmin.save();
@@ -48,7 +54,78 @@ export class AdminAuthService {
       FirstName: newAdmin.firstName,
       LastName: newAdmin.lastName,
       Status: newAdmin.status,
+      OTP: devOtp,
     };
+  }
+
+  async verifyOtp(verifyOtpDto: VerifyOtpDto) {
+    const admin = await this.adminModel.findOne({ email: verifyOtpDto.email });
+    if (!admin) {
+      throw new BadRequestException('Invalid email or OTP');
+    }
+
+    if (admin.otp !== verifyOtpDto.otp || !admin.otpExpiry || admin.otpExpiry < new Date()) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    admin.status = 'Active';
+    admin.otp = undefined;
+    admin.otpExpiry = undefined;
+    await admin.save();
+
+    const payload = { sub: admin._id, email: admin.email, role: 'admin' };
+    const token = this.jwtService.sign(payload);
+
+    return {
+      message: 'Email verified successfully',
+      Token: token,
+      UserId: admin._id,
+      Email: admin.email,
+      FirstName: admin.firstName,
+      LastName: admin.lastName,
+      Status: admin.status,
+    };
+  }
+
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    const admin = await this.adminModel.findOne({ email: forgotPasswordDto.email });
+    if (!admin) {
+      return { message: 'If an account with that email exists, an OTP has been sent.' };
+    }
+
+    const devOtp = '123456';
+    const otpExpiry = new Date();
+    otpExpiry.setMinutes(otpExpiry.getMinutes() + 10);
+
+    admin.otp = devOtp;
+    admin.otpExpiry = otpExpiry;
+    await admin.save();
+
+    return { 
+      message: 'OTP sent successfully',
+      OTP: devOtp 
+    };
+  }
+
+  async resetPassword(resetDto: ResetPasswordDto) {
+    const admin = await this.adminModel.findOne({ email: resetDto.email });
+    if (!admin) {
+      throw new BadRequestException('Invalid email or OTP');
+    }
+
+    if (admin.otp !== resetDto.otp || !admin.otpExpiry || admin.otpExpiry < new Date()) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(resetDto.newPassword, salt);
+
+    admin.passwordHash = passwordHash;
+    admin.otp = undefined;
+    admin.otpExpiry = undefined;
+    await admin.save();
+
+    return { message: 'Password reset successfully' };
   }
 
   async login(loginDto: AdminLoginDto) {

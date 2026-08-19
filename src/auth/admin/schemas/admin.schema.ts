@@ -19,6 +19,12 @@ export class Admin {
 
   @Prop({ default: 'Active' })
   status: string;
+
+  @Prop()
+  otp?: string;
+
+  @Prop()
+  otpExpiry?: Date;
 }
 
 export const AdminSchema = SchemaFactory.createForClass(Admin);
