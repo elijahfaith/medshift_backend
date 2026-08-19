@@ -206,8 +206,8 @@ export class UserAuthService {
         specialty: user.specialty || 'General',
         isVerified: user.isVerified || false,
         isListed: false, // Default to false until listing fee is paid
-        rating: 5.0,
-        shiftsCompleted: 0
+        rating: user.rating || 0.0,
+        shiftsCompleted: user.shiftsCompleted || 0
       }
     };
   }
