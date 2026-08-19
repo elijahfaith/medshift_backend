@@ -61,17 +61,17 @@ export class InstitutionAuthService {
   }
 
   async login(loginDto: InstitutionLoginDto) {
-    const inst = await this.institutionModel.findOne({ email: loginDto.email });
-    if (!inst) {
+    const user = await this.institutionModel.findOne({ email: loginDto.email });
+    if (!user || !user.passwordHash || !loginDto.password) {
       throw new UnauthorizedException('Invalid credentials.');
     }
 
-    const isMatch = await bcrypt.compare(loginDto.password, inst.passwordHash);
+    const isMatch = await bcrypt.compare(loginDto.password, user.passwordHash);
     if (!isMatch) {
       throw new UnauthorizedException('Invalid credentials.');
     }
 
-    if (inst.status === 'Suspended' || inst.status === 'Deactivated') {
+    if (user.status === 'Suspended' || user.status === 'Deactivated') {
       throw new UnauthorizedException('Account is suspended or deactivated.');
     }
 

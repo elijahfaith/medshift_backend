@@ -61,7 +61,7 @@ export class UserAuthService {
 
   async login(loginDto: UserLoginDto) {
     const user = await this.userModel.findOne({ email: loginDto.email });
-    if (!user) {
+    if (!user || !user.passwordHash || !loginDto.password) {
       throw new UnauthorizedException('Invalid credentials.');
     }
 
