@@ -61,12 +61,12 @@ export class InstitutionAuthService {
   }
 
   async login(loginDto: InstitutionLoginDto) {
-    const user = await this.institutionModel.findOne({ email: loginDto.email });
-    if (!user || !user.passwordHash || !loginDto.password) {
+    const inst = await this.institutionModel.findOne({ email: loginDto.email });
+    if (!inst || !inst.passwordHash || !loginDto.password) {
       throw new UnauthorizedException('Invalid credentials.');
     }
 
-    const isMatch = await bcrypt.compare(loginDto.password, user.passwordHash);
+    const isMatch = await bcrypt.compare(loginDto.password, inst.passwordHash);
     if (!isMatch) {
       throw new UnauthorizedException('Invalid credentials.');
     }
