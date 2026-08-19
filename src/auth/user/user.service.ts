@@ -40,8 +40,8 @@ export class UserAuthService {
       phoneNumber: registerDto.phone,
       passwordHash,
       status: 'PendingVerification',
-      profession: 'Default', // Would be updated later via another endpoint or included in registration
-      specialty: 'Default',
+      profession: registerDto.profession || 'Registered Nurse',
+      specialty: registerDto.specialty || 'General',
       otp: devOtp,
       otpExpiry,
     });
@@ -199,7 +199,7 @@ export class UserAuthService {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      phoneNumber: user.phoneNumber,
+      phoneNumber: user.phoneNumber || (user as any).phone,
       professionalDetails: {
         id: user._id,
         profession: user.profession || 'Registered Nurse',

@@ -24,6 +24,14 @@ export class UserRegisterDto {
   @IsString()
   phone: string;
 
+  @IsOptional()
+  @IsString()
+  profession?: string;
+
+  @IsOptional()
+  @IsString()
+  specialty?: string;
+
   @IsNotEmpty()
   @MinLength(8, { message: 'Password must be at least 8 characters.' })
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/, {
