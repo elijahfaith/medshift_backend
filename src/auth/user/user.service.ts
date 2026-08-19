@@ -8,7 +8,7 @@ import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User, UserDocument } from './schemas/user.schema';
-import { UserRegisterDto, UserLoginDto, VerifyOtpDto, ForgotPasswordDto, ResetPasswordDto, ChangePasswordDto } from './dto/user.dto';
+import { UserRegisterDto, UserLoginDto, VerifyOtpDto, ForgotPasswordDto, ResetPasswordDto, ChangePasswordDto, UpdateProfileDto } from './dto/user.dto';
 
 @Injectable()
 export class UserAuthService {
@@ -210,6 +210,22 @@ export class UserAuthService {
         shiftsCompleted: user.shiftsCompleted || 0
       }
     };
+  }
+
+  async updateProfile(userId: string, updateDto: UpdateProfileDto) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    if (updateDto.firstName !== undefined) user.firstName = updateDto.firstName;
+    if (updateDto.lastName !== undefined) user.lastName = updateDto.lastName;
+    if (updateDto.phone !== undefined) user.phoneNumber = updateDto.phone;
+    if (updateDto.profession !== undefined) user.profession = updateDto.profession;
+    if (updateDto.specialty !== undefined) user.specialty = updateDto.specialty;
+
+    await user.save();
+    return this.getProfile(userId);
   }
 
   async changePassword(userId: string, changePasswordDto: ChangePasswordDto) {
