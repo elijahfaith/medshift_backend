@@ -43,6 +43,7 @@ export class InstitutionAuthService {
       name: registerDto.name,
       facilityType: registerDto.facilityType,
       email: registerDto.email,
+      phoneNumber: registerDto.phone,
       passwordHash,
       address: 'Pending',
       status: 'PendingVerification',

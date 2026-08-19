@@ -36,6 +36,7 @@ export class AdminAuthService {
       firstName: registerDto.firstName,
       lastName: registerDto.lastName,
       email: registerDto.email,
+      phoneNumber: registerDto.phone,
       passwordHash,
       status: 'Active',
       otp: devOtp,

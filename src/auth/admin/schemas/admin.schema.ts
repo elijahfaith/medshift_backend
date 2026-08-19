@@ -17,6 +17,9 @@ export class Admin {
   @Prop({ required: true })
   lastName: string;
 
+  @Prop()
+  phoneNumber: string;
+
   @Prop({ default: 'Active' })
   status: string;
 

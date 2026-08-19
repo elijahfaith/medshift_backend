@@ -20,6 +20,9 @@ export class Institution {
   @Prop({ required: true })
   address: string;
 
+  @Prop()
+  phoneNumber: string;
+
   @Prop({ default: 0 })
   lat: number;
 
