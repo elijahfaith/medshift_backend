@@ -37,7 +37,7 @@ export class UserAuthService {
       firstName: registerDto.firstName,
       lastName: registerDto.lastName,
       email: registerDto.email,
-      phone: registerDto.phone,
+      phoneNumber: registerDto.phone,
       passwordHash,
       status: 'PendingVerification',
       profession: 'Default', // Would be updated later via another endpoint or included in registration
@@ -185,6 +185,30 @@ export class UserAuthService {
       LastName: user.lastName,
       Status: user.status,
       ...(currentOtp && { OTP: currentOtp }),
+    };
+  }
+
+  async getProfile(userId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    return {
+      id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      professionalDetails: {
+        id: user._id,
+        profession: user.profession || 'Registered Nurse',
+        specialty: user.specialty || 'General',
+        isVerified: user.isVerified || false,
+        isListed: false, // Default to false until listing fee is paid
+        rating: 5.0,
+        shiftsCompleted: 0
+      }
     };
   }
 }
