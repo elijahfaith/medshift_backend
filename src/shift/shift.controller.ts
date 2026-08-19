@@ -17,7 +17,7 @@ export class ShiftController {
     @Query('lat') lat: number,
     @Query('lng') lng: number,
     @Query('radius') radius?: number,
-    @Query() paginationQuery?: PaginationQueryDto,
+    @Query() paginationQuery: PaginationQueryDto = { page: 1, limit: 10 },
   ) {
     return this.shiftService.getNearbyShifts(
       Number(lat),
