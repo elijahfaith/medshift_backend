@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { UserAuthService } from './user.service';
-import { UserRegisterDto, UserLoginDto } from './dto/user.dto';
+import { UserRegisterDto, UserLoginDto, VerifyOtpDto, ForgotPasswordDto, ResetPasswordDto } from './dto/user.dto';
 
 @Controller('auth/user')
 export class UserAuthController {
@@ -14,5 +14,20 @@ export class UserAuthController {
   @Post('login')
   async login(@Body() loginDto: UserLoginDto) {
     return this.userAuthService.login(loginDto);
+  }
+
+  @Post('verify-otp')
+  async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) {
+    return this.userAuthService.verifyOtp(verifyOtpDto);
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.userAuthService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.userAuthService.resetPassword(resetPasswordDto);
   }
 }

@@ -43,6 +43,12 @@ export class User {
 
   @Prop({ default: 'PendingVerification' })
   status: string; // 'PendingVerification', 'Active', 'Suspended', 'Deactivated'
+
+  @Prop()
+  otp: string;
+
+  @Prop()
+  otpExpiry: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
