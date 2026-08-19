@@ -218,11 +218,11 @@ export class UserAuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    if (updateDto.firstName !== undefined) user.firstName = updateDto.firstName;
-    if (updateDto.lastName !== undefined) user.lastName = updateDto.lastName;
-    if (updateDto.phone !== undefined) user.phoneNumber = updateDto.phone;
-    if (updateDto.profession !== undefined) user.profession = updateDto.profession;
-    if (updateDto.specialty !== undefined) user.specialty = updateDto.specialty;
+    if (updateDto.firstName !== undefined && updateDto.firstName.trim() !== '') user.firstName = updateDto.firstName.trim();
+    if (updateDto.lastName !== undefined && updateDto.lastName.trim() !== '') user.lastName = updateDto.lastName.trim();
+    if (updateDto.phone !== undefined && updateDto.phone.trim() !== '') user.phoneNumber = updateDto.phone.trim();
+    if (updateDto.profession !== undefined && updateDto.profession.trim() !== '') user.profession = updateDto.profession.trim();
+    if (updateDto.specialty !== undefined && updateDto.specialty.trim() !== '') user.specialty = updateDto.specialty.trim();
 
     await user.save();
     return this.getProfile(userId);

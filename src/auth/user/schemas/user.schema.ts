@@ -23,10 +23,10 @@ export class User {
   @Prop()
   profilePictureUrl: string;
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   profession: string;
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   specialty: string;
 
   @Prop({ default: false })
