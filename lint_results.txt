@@ -1,0 +1,26 @@
+
+/Users/keyriumconsulting/StudioProjects/medshift-backend/src/auth/guards/jwt.strategy.ts
+  15:3   error  Async method 'validate' has no 'await' expression   @typescript-eslint/require-await
+  17:7   error  Unsafe assignment of an `any` value                 @typescript-eslint/no-unsafe-assignment
+  17:23  error  Unsafe member access .sub on an `any` value         @typescript-eslint/no-unsafe-member-access
+  18:7   error  Unsafe assignment of an `any` value                 @typescript-eslint/no-unsafe-assignment
+  18:22  error  Unsafe member access .email on an `any` value       @typescript-eslint/no-unsafe-member-access
+  19:7   error  Unsafe assignment of an `any` value                 @typescript-eslint/no-unsafe-assignment
+  19:27  error  Unsafe member access .clientType on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+/Users/keyriumconsulting/StudioProjects/medshift-backend/src/main.ts
+  24:1  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/keyriumconsulting/StudioProjects/medshift-backend/src/timesheet/dto/timesheet.dto.ts
+  1:20  error  'IsNumber' is defined but never used      @typescript-eslint/no-unused-vars
+  1:30  error  'IsOptional' is defined but never used    @typescript-eslint/no-unused-vars
+  1:42  error  'IsDateString' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/keyriumconsulting/StudioProjects/medshift-backend/src/tracking/tracking.gateway.ts
+  34:5  warning  Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator  @typescript-eslint/no-floating-promises
+
+/Users/keyriumconsulting/StudioProjects/medshift-backend/src/verification/schemas/licensing-council.schema.ts
+  2:20  error  'Types' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 13 problems (11 errors, 2 warnings)
+

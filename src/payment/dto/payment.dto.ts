@@ -1,0 +1,21 @@
+import { IsString, IsNumber, IsOptional } from 'class-validator';
+
+export class CreatePaymentDto {
+  @IsString()
+  timesheetId: string;
+
+  @IsString()
+  paystackReference: string;
+
+  @IsNumber()
+  amount: number;
+}
+
+export class UpdatePaymentStatusDto {
+  @IsString()
+  status: string;
+
+  @IsOptional()
+  @IsString()
+  adminNotes?: string;
+}
