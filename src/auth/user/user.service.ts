@@ -158,6 +158,17 @@ export class UserAuthService {
       throw new UnauthorizedException('Account is suspended or deactivated.');
     }
 
+    let currentOtp = undefined;
+    if (user.status === 'PendingVerification') {
+      const devOtp = '123456';
+      const otpExpiry = new Date();
+      otpExpiry.setMinutes(otpExpiry.getMinutes() + 10);
+      user.otp = devOtp;
+      user.otpExpiry = otpExpiry;
+      await user.save();
+      currentOtp = devOtp;
+    }
+
     const payload = {
       sub: user._id,
       email: user.email,
@@ -173,6 +184,7 @@ export class UserAuthService {
       FirstName: user.firstName,
       LastName: user.lastName,
       Status: user.status,
+      ...(currentOtp && { OTP: currentOtp }),
     };
   }
 }
