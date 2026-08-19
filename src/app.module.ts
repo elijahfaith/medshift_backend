@@ -12,6 +12,7 @@ import { TimesheetModule } from './timesheet/timesheet.module';
 import { PaymentModule } from './payment/payment.module';
 import { VerificationModule } from './verification/verification.module';
 import { TrackingModule } from './tracking/tracking.module';
+import { WalletModule } from './wallet/wallet.module';
 import { JwtStrategy } from './auth/guards/jwt.strategy';
 
 @Module({
@@ -33,6 +34,7 @@ import { JwtStrategy } from './auth/guards/jwt.strategy';
     PaymentModule,
     VerificationModule,
     TrackingModule,
+    WalletModule,
   ],
   controllers: [AppController],
   providers: [
