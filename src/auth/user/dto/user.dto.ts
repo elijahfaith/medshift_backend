@@ -92,3 +92,17 @@ export class ResetPasswordDto {
   })
   newPassword: string;
 }
+
+export class ChangePasswordDto {
+  @IsNotEmpty()
+  @IsString()
+  currentPassword: string;
+
+  @IsNotEmpty()
+  @MinLength(8, { message: 'Password must be at least 8 characters.' })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/, {
+    message:
+      'Password must have at least one lowercase, one uppercase, one number and one special character.',
+  })
+  newPassword: string;
+}

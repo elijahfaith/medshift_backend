@@ -8,7 +8,7 @@ import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User, UserDocument } from './schemas/user.schema';
-import { UserRegisterDto, UserLoginDto, VerifyOtpDto, ForgotPasswordDto, ResetPasswordDto } from './dto/user.dto';
+import { UserRegisterDto, UserLoginDto, VerifyOtpDto, ForgotPasswordDto, ResetPasswordDto, ChangePasswordDto } from './dto/user.dto';
 
 @Injectable()
 export class UserAuthService {
@@ -210,5 +210,22 @@ export class UserAuthService {
         shiftsCompleted: user.shiftsCompleted || 0
       }
     };
+  }
+
+  async changePassword(userId: string, changePasswordDto: ChangePasswordDto) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const isPasswordValid = await bcrypt.compare(changePasswordDto.currentPassword, user.passwordHash);
+    if (!isPasswordValid) {
+      throw new BadRequestException('Invalid current password');
+    }
+
+    user.passwordHash = await bcrypt.hash(changePasswordDto.newPassword, 10);
+    await user.save();
+
+    return { message: 'Password changed successfully' };
   }
 }
