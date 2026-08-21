@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TimesheetController = void 0;
 const common_1 = require("@nestjs/common");
 const timesheet_service_1 = require("./timesheet.service");
+const timesheet_dto_1 = require("./dto/timesheet.dto");
+const pagination_dto_1 = require("../common/dto/pagination.dto");
 let TimesheetController = class TimesheetController {
     timesheetService;
     constructor(timesheetService) {
@@ -23,14 +25,14 @@ let TimesheetController = class TimesheetController {
     async clockIn(createDto) {
         return this.timesheetService.clockIn(createDto);
     }
-    async clockOut(id) {
-        return this.timesheetService.clockOut(id);
+    async clockOut(id, clockOutDto) {
+        return this.timesheetService.clockOut(id, clockOutDto);
     }
-    async getByProfessional(professionalId) {
-        return this.timesheetService.getTimesheetsByProfessional(professionalId);
+    async getByProfessional(professionalId, paginationQuery) {
+        return this.timesheetService.getTimesheetsByProfessional(professionalId, paginationQuery);
     }
-    async updateStatus(id, status) {
-        return this.timesheetService.updateTimesheetStatus(id, status);
+    async updateStatus(id, updateDto) {
+        return this.timesheetService.updateTimesheetStatus(id, updateDto);
     }
 };
 exports.TimesheetController = TimesheetController;
@@ -38,29 +40,31 @@ __decorate([
     (0, common_1.Post)('clock-in'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [timesheet_dto_1.CreateTimesheetDto]),
     __metadata("design:returntype", Promise)
 ], TimesheetController.prototype, "clockIn", null);
 __decorate([
     (0, common_1.Post)(':id/clock-out'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, timesheet_dto_1.ClockOutDto]),
     __metadata("design:returntype", Promise)
 ], TimesheetController.prototype, "clockOut", null);
 __decorate([
     (0, common_1.Get)('professional/:id'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, pagination_dto_1.PaginationQueryDto]),
     __metadata("design:returntype", Promise)
 ], TimesheetController.prototype, "getByProfessional", null);
 __decorate([
     (0, common_1.Put)(':id/status'),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)('status')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, timesheet_dto_1.UpdateTimesheetStatusDto]),
     __metadata("design:returntype", Promise)
 ], TimesheetController.prototype, "updateStatus", null);
 exports.TimesheetController = TimesheetController = __decorate([

@@ -16,6 +16,8 @@ export declare class Shift {
         type: string;
         coordinates: number[];
     };
+    accessCode: string;
+    qrCodeData: string;
 }
 export declare const ShiftSchema: import("mongoose").Schema<Shift, import("mongoose").Model<Shift, any, any, any, any, any, Shift>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Shift, Document<unknown, {}, Shift, {
     id: string;
@@ -129,6 +131,24 @@ export declare const ShiftSchema: import("mongoose").Schema<Shift, import("mongo
         type: string;
         coordinates: number[];
     }, Shift, Document<unknown, {}, Shift, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Shift & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    accessCode?: import("mongoose").SchemaDefinitionProperty<string, Shift, Document<unknown, {}, Shift, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Shift & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    qrCodeData?: import("mongoose").SchemaDefinitionProperty<string, Shift, Document<unknown, {}, Shift, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Shift & {
         _id: Types.ObjectId;

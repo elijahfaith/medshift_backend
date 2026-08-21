@@ -25,6 +25,8 @@ let User = class User {
     rating;
     shiftsCompleted;
     status;
+    otp;
+    otpExpiry;
 };
 exports.User = User;
 __decorate([
@@ -52,11 +54,11 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "profilePictureUrl", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ default: '' }),
     __metadata("design:type", String)
 ], User.prototype, "profession", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ default: '' }),
     __metadata("design:type", String)
 ], User.prototype, "specialty", void 0);
 __decorate([
@@ -79,6 +81,14 @@ __decorate([
     (0, mongoose_1.Prop)({ default: 'PendingVerification' }),
     __metadata("design:type", String)
 ], User.prototype, "status", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], User.prototype, "otp", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Date)
+], User.prototype, "otpExpiry", void 0);
 exports.User = User = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], User);

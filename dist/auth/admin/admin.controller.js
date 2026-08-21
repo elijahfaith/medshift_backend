@@ -27,6 +27,15 @@ let AdminAuthController = class AdminAuthController {
     async login(loginDto) {
         return this.adminAuthService.login(loginDto);
     }
+    async verifyOtp(verifyOtpDto) {
+        return this.adminAuthService.verifyOtp(verifyOtpDto);
+    }
+    async forgotPassword(forgotPasswordDto) {
+        return this.adminAuthService.forgotPassword(forgotPasswordDto);
+    }
+    async resetPassword(resetPasswordDto) {
+        return this.adminAuthService.resetPassword(resetPasswordDto);
+    }
 };
 exports.AdminAuthController = AdminAuthController;
 __decorate([
@@ -43,6 +52,27 @@ __decorate([
     __metadata("design:paramtypes", [admin_dto_1.AdminLoginDto]),
     __metadata("design:returntype", Promise)
 ], AdminAuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.Post)('verify-otp'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [admin_dto_1.VerifyOtpDto]),
+    __metadata("design:returntype", Promise)
+], AdminAuthController.prototype, "verifyOtp", null);
+__decorate([
+    (0, common_1.Post)('forgot-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [admin_dto_1.ForgotPasswordDto]),
+    __metadata("design:returntype", Promise)
+], AdminAuthController.prototype, "forgotPassword", null);
+__decorate([
+    (0, common_1.Post)('reset-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [admin_dto_1.ResetPasswordDto]),
+    __metadata("design:returntype", Promise)
+], AdminAuthController.prototype, "resetPassword", null);
 exports.AdminAuthController = AdminAuthController = __decorate([
     (0, common_1.Controller)('auth/admin'),
     __metadata("design:paramtypes", [admin_service_1.AdminAuthService])

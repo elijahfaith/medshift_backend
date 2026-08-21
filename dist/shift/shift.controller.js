@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ShiftController = void 0;
 const common_1 = require("@nestjs/common");
 const shift_service_1 = require("./shift.service");
+const shift_dto_1 = require("./dto/shift.dto");
+const pagination_dto_1 = require("../common/dto/pagination.dto");
 let ShiftController = class ShiftController {
     shiftService;
     constructor(shiftService) {
@@ -23,11 +25,11 @@ let ShiftController = class ShiftController {
     async create(createDto) {
         return this.shiftService.createShift(createDto);
     }
-    async findNearby(lat, lng, radius) {
-        return this.shiftService.getNearbyShifts(Number(lat), Number(lng), radius ? Number(radius) : undefined);
+    async findNearby(lat, lng, radius, paginationQuery = { page: 1, limit: 10 }) {
+        return this.shiftService.getNearbyShifts(Number(lat), Number(lng), radius ? Number(radius) : undefined, paginationQuery);
     }
-    async findAll() {
-        return this.shiftService.getShifts();
+    async findAll(paginationQuery) {
+        return this.shiftService.getShifts(paginationQuery);
     }
     async findOne(id) {
         return this.shiftService.getShiftById(id);
@@ -41,13 +43,16 @@ let ShiftController = class ShiftController {
     async getApplicants(id) {
         return this.shiftService.getApplicantsForShift(id);
     }
+    async getUpcomingShifts(professionalId) {
+        return this.shiftService.getUpcomingShiftsForProfessional(professionalId);
+    }
 };
 exports.ShiftController = ShiftController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [shift_dto_1.CreateShiftDto]),
     __metadata("design:returntype", Promise)
 ], ShiftController.prototype, "create", null);
 __decorate([
@@ -55,14 +60,16 @@ __decorate([
     __param(0, (0, common_1.Query)('lat')),
     __param(1, (0, common_1.Query)('lng')),
     __param(2, (0, common_1.Query)('radius')),
+    __param(3, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, Number]),
+    __metadata("design:paramtypes", [Number, Number, Number, pagination_dto_1.PaginationQueryDto]),
     __metadata("design:returntype", Promise)
 ], ShiftController.prototype, "findNearby", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [pagination_dto_1.PaginationQueryDto]),
     __metadata("design:returntype", Promise)
 ], ShiftController.prototype, "findAll", null);
 __decorate([
@@ -77,7 +84,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, shift_dto_1.UpdateShiftDto]),
     __metadata("design:returntype", Promise)
 ], ShiftController.prototype, "update", null);
 __decorate([
@@ -95,6 +102,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ShiftController.prototype, "getApplicants", null);
+__decorate([
+    (0, common_1.Get)('upcoming/:professionalId'),
+    __param(0, (0, common_1.Param)('professionalId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ShiftController.prototype, "getUpcomingShifts", null);
 exports.ShiftController = ShiftController = __decorate([
     (0, common_1.Controller)('shift'),
     __metadata("design:paramtypes", [shift_service_1.ShiftService])

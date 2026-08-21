@@ -16,7 +16,10 @@ let Admin = class Admin {
     passwordHash;
     firstName;
     lastName;
+    phoneNumber;
     status;
+    otp;
+    otpExpiry;
 };
 exports.Admin = Admin;
 __decorate([
@@ -36,9 +39,21 @@ __decorate([
     __metadata("design:type", String)
 ], Admin.prototype, "lastName", void 0);
 __decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Admin.prototype, "phoneNumber", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ default: 'Active' }),
     __metadata("design:type", String)
 ], Admin.prototype, "status", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Admin.prototype, "otp", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Date)
+], Admin.prototype, "otpExpiry", void 0);
 exports.Admin = Admin = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Admin);

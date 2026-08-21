@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Put, Body, UseGuards, Req } from '@nestjs/common';
 import { InstitutionAuthService } from './institution.service';
 import {
   InstitutionRegisterDto,
@@ -6,7 +6,9 @@ import {
   VerifyOtpDto,
   ForgotPasswordDto,
   ResetPasswordDto,
+  OnboardInstitutionDto,
 } from './dto/institution.dto';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 @Controller('auth/institution')
 export class InstitutionAuthController {
@@ -37,5 +39,12 @@ export class InstitutionAuthController {
   @Post('reset-password')
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.institutionAuthService.resetPassword(resetPasswordDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('onboard')
+  async onboard(@Req() req, @Body() onboardDto: OnboardInstitutionDto) {
+    const institutionId = req.user.sub;
+    return this.institutionAuthService.onboard(institutionId, onboardDto);
   }
 }

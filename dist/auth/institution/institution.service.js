@@ -60,34 +60,108 @@ let InstitutionAuthService = class InstitutionAuthService {
         this.jwtService = jwtService;
     }
     async register(registerDto) {
-        const existingInst = await this.institutionModel.findOne({ email: registerDto.email });
+        const existingInst = await this.institutionModel.findOne({
+            email: registerDto.email,
+        });
         if (existingInst) {
             throw new common_1.BadRequestException('Email is already taken.');
         }
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(registerDto.password, salt);
+        const devOtp = '123456';
+        const otpExpiry = new Date();
+        otpExpiry.setMinutes(otpExpiry.getMinutes() + 10);
         const newInst = new this.institutionModel({
             name: registerDto.name,
             facilityType: registerDto.facilityType,
             email: registerDto.email,
+            phoneNumber: registerDto.phone,
             passwordHash,
             address: 'Pending',
             status: 'PendingVerification',
+            otp: devOtp,
+            otpExpiry,
         });
         await newInst.save();
-        const payload = { sub: newInst._id, email: newInst.email, role: 'institution', clientType: registerDto.clientType };
+        const payload = {
+            sub: newInst._id,
+            email: newInst.email,
+            role: 'institution',
+            clientType: registerDto.clientType,
+        };
         const token = this.jwtService.sign(payload);
         return {
             Token: token,
-            UserId: newInst._id,
+            InstitutionId: newInst._id,
             Email: newInst.email,
             Name: newInst.name,
             Status: newInst.status,
+            OTP: devOtp,
         };
+    }
+    async verifyOtp(verifyOtpDto) {
+        const inst = await this.institutionModel.findOne({ email: verifyOtpDto.email });
+        if (!inst) {
+            throw new common_1.BadRequestException('Invalid email or OTP');
+        }
+        if (inst.otp !== verifyOtpDto.otp || !inst.otpExpiry || inst.otpExpiry < new Date()) {
+            throw new common_1.BadRequestException('Invalid or expired OTP');
+        }
+        inst.isVerified = true;
+        inst.status = 'Active';
+        inst.otp = undefined;
+        inst.otpExpiry = undefined;
+        await inst.save();
+        const payload = {
+            sub: inst._id,
+            email: inst.email,
+            role: 'institution',
+        };
+        const token = this.jwtService.sign(payload);
+        return {
+            message: 'Email verified successfully',
+            Token: token,
+            InstitutionId: inst._id,
+            Email: inst.email,
+            Name: inst.name,
+            Status: inst.status,
+        };
+    }
+    async forgotPassword(forgotPasswordDto) {
+        const inst = await this.institutionModel.findOne({ email: forgotPasswordDto.email });
+        if (!inst) {
+            return { message: 'If an account with that email exists, an OTP has been sent.' };
+        }
+        const devOtp = '123456';
+        const otpExpiry = new Date();
+        otpExpiry.setMinutes(otpExpiry.getMinutes() + 10);
+        inst.otp = devOtp;
+        inst.otpExpiry = otpExpiry;
+        await inst.save();
+        return {
+            message: 'OTP sent successfully',
+            OTP: devOtp
+        };
+    }
+    async resetPassword(resetDto) {
+        const inst = await this.institutionModel.findOne({ email: resetDto.email });
+        if (!inst) {
+            throw new common_1.BadRequestException('Invalid email or OTP');
+        }
+        if (inst.otp !== resetDto.otp || !inst.otpExpiry || inst.otpExpiry < new Date()) {
+            throw new common_1.BadRequestException('Invalid or expired OTP');
+        }
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(resetDto.newPassword, salt);
+        inst.passwordHash = passwordHash;
+        inst.otp = undefined;
+        inst.otpExpiry = undefined;
+        await inst.save();
+        return { message: 'Password reset successfully' };
     }
     async login(loginDto) {
         const inst = await this.institutionModel.findOne({ email: loginDto.email });
-        if (!inst) {
+        if (!inst || !inst.passwordHash || !loginDto.password) {
             throw new common_1.UnauthorizedException('Invalid credentials.');
         }
         const isMatch = await bcrypt.compare(loginDto.password, inst.passwordHash);
@@ -97,13 +171,35 @@ let InstitutionAuthService = class InstitutionAuthService {
         if (inst.status === 'Suspended' || inst.status === 'Deactivated') {
             throw new common_1.UnauthorizedException('Account is suspended or deactivated.');
         }
-        const payload = { sub: inst._id, email: inst.email, role: 'institution', clientType: loginDto.clientType };
+        const payload = {
+            sub: inst._id,
+            email: inst.email,
+            role: 'institution',
+            clientType: loginDto.clientType,
+        };
         const token = this.jwtService.sign(payload);
         return {
             Token: token,
             UserId: inst._id,
             Email: inst.email,
             Name: inst.name,
+            Status: inst.status,
+        };
+    }
+    async onboard(institutionId, onboardDto) {
+        const inst = await this.institutionModel.findById(institutionId);
+        if (!inst) {
+            throw new common_1.BadRequestException('Institution not found');
+        }
+        inst.facilityType = onboardDto.facilityType;
+        inst.name = onboardDto.name;
+        inst.licenseNumber = onboardDto.licenseNumber;
+        inst.address = onboardDto.address;
+        inst.status = 'UnderReview';
+        await inst.save();
+        return {
+            message: 'Onboarding complete, pending review',
+            InstitutionId: inst._id,
             Status: inst.status,
         };
     }

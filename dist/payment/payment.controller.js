@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentController = void 0;
 const common_1 = require("@nestjs/common");
 const payment_service_1 = require("./payment.service");
+const payment_dto_1 = require("./dto/payment.dto");
+const pagination_dto_1 = require("../common/dto/pagination.dto");
 let PaymentController = class PaymentController {
     paymentService;
     constructor(paymentService) {
@@ -23,14 +25,14 @@ let PaymentController = class PaymentController {
     async createPayment(createDto) {
         return this.paymentService.createPayment(createDto);
     }
-    async getAll() {
-        return this.paymentService.getAllPayments();
+    async getAll(paginationQuery) {
+        return this.paymentService.getAllPayments(paginationQuery);
     }
     async getById(id) {
         return this.paymentService.getPaymentById(id);
     }
-    async updateStatus(id, body) {
-        return this.paymentService.updatePaymentStatus(id, body.status, body.adminNotes);
+    async updateStatus(id, updateDto) {
+        return this.paymentService.updatePaymentStatus(id, updateDto);
     }
 };
 exports.PaymentController = PaymentController;
@@ -38,13 +40,14 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [payment_dto_1.CreatePaymentDto]),
     __metadata("design:returntype", Promise)
 ], PaymentController.prototype, "createPayment", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [pagination_dto_1.PaginationQueryDto]),
     __metadata("design:returntype", Promise)
 ], PaymentController.prototype, "getAll", null);
 __decorate([
@@ -59,7 +62,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, payment_dto_1.UpdatePaymentStatusDto]),
     __metadata("design:returntype", Promise)
 ], PaymentController.prototype, "updateStatus", null);
 exports.PaymentController = PaymentController = __decorate([

@@ -16,6 +16,7 @@ exports.InstitutionAuthController = void 0;
 const common_1 = require("@nestjs/common");
 const institution_service_1 = require("./institution.service");
 const institution_dto_1 = require("./dto/institution.dto");
+const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
 let InstitutionAuthController = class InstitutionAuthController {
     institutionAuthService;
     constructor(institutionAuthService) {
@@ -26,6 +27,19 @@ let InstitutionAuthController = class InstitutionAuthController {
     }
     async login(loginDto) {
         return this.institutionAuthService.login(loginDto);
+    }
+    async verifyOtp(verifyOtpDto) {
+        return this.institutionAuthService.verifyOtp(verifyOtpDto);
+    }
+    async forgotPassword(forgotPasswordDto) {
+        return this.institutionAuthService.forgotPassword(forgotPasswordDto);
+    }
+    async resetPassword(resetPasswordDto) {
+        return this.institutionAuthService.resetPassword(resetPasswordDto);
+    }
+    async onboard(req, onboardDto) {
+        const institutionId = req.user.sub;
+        return this.institutionAuthService.onboard(institutionId, onboardDto);
     }
 };
 exports.InstitutionAuthController = InstitutionAuthController;
@@ -43,6 +57,36 @@ __decorate([
     __metadata("design:paramtypes", [institution_dto_1.InstitutionLoginDto]),
     __metadata("design:returntype", Promise)
 ], InstitutionAuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.Post)('verify-otp'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [institution_dto_1.VerifyOtpDto]),
+    __metadata("design:returntype", Promise)
+], InstitutionAuthController.prototype, "verifyOtp", null);
+__decorate([
+    (0, common_1.Post)('forgot-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [institution_dto_1.ForgotPasswordDto]),
+    __metadata("design:returntype", Promise)
+], InstitutionAuthController.prototype, "forgotPassword", null);
+__decorate([
+    (0, common_1.Post)('reset-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [institution_dto_1.ResetPasswordDto]),
+    __metadata("design:returntype", Promise)
+], InstitutionAuthController.prototype, "resetPassword", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Put)('onboard'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, institution_dto_1.OnboardInstitutionDto]),
+    __metadata("design:returntype", Promise)
+], InstitutionAuthController.prototype, "onboard", null);
 exports.InstitutionAuthController = InstitutionAuthController = __decorate([
     (0, common_1.Controller)('auth/institution'),
     __metadata("design:paramtypes", [institution_service_1.InstitutionAuthService])

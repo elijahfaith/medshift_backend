@@ -19,7 +19,9 @@ exports.InstitutionAuthModule = InstitutionAuthModule;
 exports.InstitutionAuthModule = InstitutionAuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: institution_schema_1.Institution.name, schema: institution_schema_1.InstitutionSchema }]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: institution_schema_1.Institution.name, schema: institution_schema_1.InstitutionSchema },
+            ]),
             jwt_1.JwtModule.register({
                 secret: process.env.JWT_SECRET || 'fallback_secret',
                 signOptions: { expiresIn: '7d' },

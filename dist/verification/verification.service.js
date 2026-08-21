@@ -29,8 +29,14 @@ let VerificationService = class VerificationService {
         const council = new this.councilModel(createDto);
         return council.save();
     }
-    async getCouncils() {
-        return this.councilModel.find().exec();
+    async getCouncils(paginationQuery) {
+        const { page = 1, limit = 10 } = paginationQuery;
+        const skip = (page - 1) * limit;
+        const [data, total] = await Promise.all([
+            this.councilModel.find().skip(skip).limit(limit).exec(),
+            this.councilModel.countDocuments().exec(),
+        ]);
+        return { data, total, page, lastPage: Math.ceil(total / limit) };
     }
     async submitRequest(createDto) {
         const request = new this.requestModel({
@@ -39,22 +45,38 @@ let VerificationService = class VerificationService {
         });
         return request.save();
     }
-    async getRequests() {
-        return this.requestModel.find().populate('professionalId').populate('licensingCouncilId').exec();
+    async getRequests(paginationQuery) {
+        const { page = 1, limit = 10 } = paginationQuery;
+        const skip = (page - 1) * limit;
+        const [data, total] = await Promise.all([
+            this.requestModel
+                .find()
+                .skip(skip)
+                .limit(limit)
+                .populate('professionalId')
+                .populate('licensingCouncilId')
+                .exec(),
+            this.requestModel.countDocuments().exec(),
+        ]);
+        return { data, total, page, lastPage: Math.ceil(total / limit) };
     }
     async getRequestById(id) {
-        const request = await this.requestModel.findById(id).populate('professionalId').populate('licensingCouncilId').exec();
+        const request = await this.requestModel
+            .findById(id)
+            .populate('professionalId')
+            .populate('licensingCouncilId')
+            .exec();
         if (!request)
             throw new common_1.NotFoundException('Request not found');
         return request;
     }
-    async updateRequestStatus(id, status, adminNotes) {
+    async updateRequestStatus(id, updateDto) {
         const request = await this.requestModel.findById(id).exec();
         if (!request)
             throw new common_1.NotFoundException('Request not found');
-        request.status = status;
-        if (adminNotes)
-            request.adminNotes = adminNotes;
+        request.status = updateDto.status;
+        if (updateDto.adminNotes)
+            request.adminNotes = updateDto.adminNotes;
         return request.save();
     }
 };

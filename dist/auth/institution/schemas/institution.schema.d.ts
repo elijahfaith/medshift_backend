@@ -6,10 +6,14 @@ export declare class Institution {
     name: string;
     facilityType: string;
     address: string;
+    phoneNumber: string;
+    licenseNumber: string;
     lat: number;
     lng: number;
     isVerified: boolean;
     status: string;
+    otp?: string;
+    otpExpiry?: Date;
 }
 export declare const InstitutionSchema: import("mongoose").Schema<Institution, import("mongoose").Model<Institution, any, any, any, any, any, Institution>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Institution, Document<unknown, {}, Institution, {
     id: string;
@@ -65,6 +69,24 @@ export declare const InstitutionSchema: import("mongoose").Schema<Institution, i
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
     }>> | undefined;
+    phoneNumber?: import("mongoose").SchemaDefinitionProperty<string, Institution, Document<unknown, {}, Institution, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Institution & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    licenseNumber?: import("mongoose").SchemaDefinitionProperty<string, Institution, Document<unknown, {}, Institution, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Institution & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
     lat?: import("mongoose").SchemaDefinitionProperty<number, Institution, Document<unknown, {}, Institution, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Institution & {
@@ -93,6 +115,24 @@ export declare const InstitutionSchema: import("mongoose").Schema<Institution, i
         id: string;
     }>> | undefined;
     status?: import("mongoose").SchemaDefinitionProperty<string, Institution, Document<unknown, {}, Institution, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Institution & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    otp?: import("mongoose").SchemaDefinitionProperty<string | undefined, Institution, Document<unknown, {}, Institution, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Institution & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    otpExpiry?: import("mongoose").SchemaDefinitionProperty<Date | undefined, Institution, Document<unknown, {}, Institution, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Institution & {
         _id: import("mongoose").Types.ObjectId;

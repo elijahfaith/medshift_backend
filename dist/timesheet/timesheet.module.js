@@ -12,13 +12,17 @@ const mongoose_1 = require("@nestjs/mongoose");
 const timesheet_controller_1 = require("./timesheet.controller");
 const timesheet_service_1 = require("./timesheet.service");
 const timesheet_schema_1 = require("./schemas/timesheet.schema");
+const shift_schema_1 = require("../shift/schemas/shift.schema");
 let TimesheetModule = class TimesheetModule {
 };
 exports.TimesheetModule = TimesheetModule;
 exports.TimesheetModule = TimesheetModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: timesheet_schema_1.Timesheet.name, schema: timesheet_schema_1.TimesheetSchema }]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: timesheet_schema_1.Timesheet.name, schema: timesheet_schema_1.TimesheetSchema },
+                { name: shift_schema_1.Shift.name, schema: shift_schema_1.ShiftSchema },
+            ]),
         ],
         controllers: [timesheet_controller_1.TimesheetController],
         providers: [timesheet_service_1.TimesheetService],

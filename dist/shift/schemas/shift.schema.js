@@ -25,6 +25,8 @@ let Shift = class Shift {
     minYearsExperience;
     status;
     location;
+    accessCode;
+    qrCodeData;
 };
 exports.Shift = Shift;
 __decorate([
@@ -85,6 +87,14 @@ __decorate([
     }),
     __metadata("design:type", Object)
 ], Shift.prototype, "location", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Shift.prototype, "accessCode", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Shift.prototype, "qrCodeData", void 0);
 exports.Shift = Shift = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Shift);

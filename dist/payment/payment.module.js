@@ -12,16 +12,22 @@ const mongoose_1 = require("@nestjs/mongoose");
 const payment_controller_1 = require("./payment.controller");
 const payment_service_1 = require("./payment.service");
 const payment_schema_1 = require("./schemas/payment.schema");
+const paystack_controller_1 = require("./paystack.controller");
+const paystack_service_1 = require("./paystack.service");
+const user_schema_1 = require("../auth/user/schemas/user.schema");
 let PaymentModule = class PaymentModule {
 };
 exports.PaymentModule = PaymentModule;
 exports.PaymentModule = PaymentModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: payment_schema_1.EscrowPayment.name, schema: payment_schema_1.EscrowPaymentSchema }]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: payment_schema_1.EscrowPayment.name, schema: payment_schema_1.EscrowPaymentSchema },
+                { name: user_schema_1.User.name, schema: user_schema_1.UserSchema },
+            ]),
         ],
-        controllers: [payment_controller_1.PaymentController],
-        providers: [payment_service_1.PaymentService],
+        controllers: [payment_controller_1.PaymentController, paystack_controller_1.PaystackController],
+        providers: [payment_service_1.PaymentService, paystack_service_1.PaystackService],
     })
 ], PaymentModule);
 //# sourceMappingURL=payment.module.js.map

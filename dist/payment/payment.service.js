@@ -26,23 +26,42 @@ let PaymentService = class PaymentService {
         const payment = new this.paymentModel(createDto);
         return payment.save();
     }
-    async getAllPayments() {
-        return this.paymentModel.find().populate('timesheetId').exec();
+    async getAllPayments(paginationQuery) {
+        const { page = 1, limit = 10 } = paginationQuery;
+        const skip = (page - 1) * limit;
+        const [data, total] = await Promise.all([
+            this.paymentModel
+                .find()
+                .skip(skip)
+                .limit(limit)
+                .populate('timesheetId')
+                .exec(),
+            this.paymentModel.countDocuments().exec(),
+        ]);
+        return {
+            data,
+            total,
+            page,
+            lastPage: Math.ceil(total / limit),
+        };
     }
     async getPaymentById(id) {
-        const payment = await this.paymentModel.findById(id).populate('timesheetId').exec();
+        const payment = await this.paymentModel
+            .findById(id)
+            .populate('timesheetId')
+            .exec();
         if (!payment)
             throw new common_1.NotFoundException('Payment not found');
         return payment;
     }
-    async updatePaymentStatus(id, status, adminNotes) {
+    async updatePaymentStatus(id, updateDto) {
         const payment = await this.paymentModel.findById(id).exec();
         if (!payment)
             throw new common_1.NotFoundException('Payment not found');
-        payment.status = status;
-        if (adminNotes)
-            payment.adminNotes = adminNotes;
-        if (status === 'Paid')
+        payment.status = updateDto.status;
+        if (updateDto.adminNotes)
+            payment.adminNotes = updateDto.adminNotes;
+        if (updateDto.status === 'Paid')
             payment.processedAt = new Date();
         return payment.save();
     }

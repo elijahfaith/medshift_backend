@@ -25,13 +25,15 @@ let TrackingGateway = class TrackingGateway {
     }
     handleJoinRoom(data, client) {
         const room = `shift_${data.shiftId}`;
-        client.join(room);
+        void client.join(room);
         console.log(`Client ${client.id} joined room ${room} as ${data.role}`);
-        this.server.to(room).emit('user-joined', { role: data.role, clientId: client.id });
+        void this.server
+            .to(room)
+            .emit('user-joined', { role: data.role, clientId: client.id });
     }
     handleLocationUpdate(data, client) {
         const room = `shift_${data.shiftId}`;
-        client.to(room).emit('professional-location', {
+        void client.to(room).emit('professional-location', {
             lat: data.lat,
             lng: data.lng,
             heading: data.heading,

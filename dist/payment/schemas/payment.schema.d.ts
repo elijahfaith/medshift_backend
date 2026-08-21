@@ -1,5 +1,4 @@
 import { Document, Types } from 'mongoose';
-export type EscrowPaymentDocument = EscrowPayment & Document;
 export declare class EscrowPayment {
     timesheetId: Types.ObjectId;
     paystackReference: string;
@@ -8,6 +7,7 @@ export declare class EscrowPayment {
     adminNotes: string;
     processedAt: Date;
 }
+export type EscrowPaymentDocument = EscrowPayment & Document;
 export declare const EscrowPaymentSchema: import("mongoose").Schema<EscrowPayment, import("mongoose").Model<EscrowPayment, any, any, any, any, any, EscrowPayment>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, EscrowPayment, Document<unknown, {}, EscrowPayment, {
     id: string;
 }, import("mongoose").DefaultSchemaOptions> & Omit<EscrowPayment & {

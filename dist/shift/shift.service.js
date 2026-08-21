@@ -26,11 +26,28 @@ let ShiftService = class ShiftService {
         this.applicantModel = applicantModel;
     }
     async createShift(createDto) {
-        const newShift = new this.shiftModel(createDto);
+        const accessCode = Math.floor(100000 + Math.random() * 900000).toString();
+        const qrCodeData = `SHIFT-${Date.now().toString(36)}-${accessCode}`;
+        const newShift = new this.shiftModel({
+            ...createDto,
+            accessCode,
+            qrCodeData,
+        });
         return newShift.save();
     }
-    async getShifts() {
-        return this.shiftModel.find().exec();
+    async getShifts(paginationQuery) {
+        const { page = 1, limit = 10 } = paginationQuery;
+        const skip = (page - 1) * limit;
+        const [data, total] = await Promise.all([
+            this.shiftModel.find().skip(skip).limit(limit).exec(),
+            this.shiftModel.countDocuments().exec(),
+        ]);
+        return {
+            data,
+            total,
+            page,
+            lastPage: Math.ceil(total / limit),
+        };
     }
     async getShiftById(id) {
         const shift = await this.shiftModel.findById(id).exec();
@@ -39,7 +56,9 @@ let ShiftService = class ShiftService {
         return shift;
     }
     async updateShift(id, updateDto) {
-        const shift = await this.shiftModel.findByIdAndUpdate(id, updateDto, { new: true }).exec();
+        const shift = await this.shiftModel
+            .findByIdAndUpdate(id, updateDto, { new: true })
+            .exec();
         if (!shift)
             throw new common_1.NotFoundException('Shift not found');
         return shift;
@@ -53,10 +72,21 @@ let ShiftService = class ShiftService {
         return application.save();
     }
     async getApplicantsForShift(shiftId) {
-        return this.applicantModel.find({ shiftId: new mongoose_2.Types.ObjectId(shiftId) }).populate('professionalId').exec();
+        return this.applicantModel
+            .find({ shiftId: new mongoose_2.Types.ObjectId(shiftId) })
+            .populate('professionalId')
+            .exec();
     }
-    async getNearbyShifts(lat, lng, maxDistanceInMeters = 50000) {
-        return this.shiftModel.find({
+    async getUpcomingShiftsForProfessional(professionalId) {
+        return this.applicantModel
+            .find({ professionalId: new mongoose_2.Types.ObjectId(professionalId) })
+            .populate('shiftId')
+            .exec();
+    }
+    async getNearbyShifts(lat, lng, maxDistanceInMeters = 50000, paginationQuery) {
+        const { page = 1, limit = 10 } = paginationQuery;
+        const skip = (page - 1) * limit;
+        const query = {
             location: {
                 $near: {
                     $geometry: {
@@ -67,7 +97,17 @@ let ShiftService = class ShiftService {
                 },
             },
             status: 'Open',
-        }).exec();
+        };
+        const [data, total] = await Promise.all([
+            this.shiftModel.find(query).skip(skip).limit(limit).exec(),
+            this.shiftModel.countDocuments(query).exec(),
+        ]);
+        return {
+            data,
+            total,
+            page,
+            lastPage: Math.ceil(total / limit),
+        };
     }
 };
 exports.ShiftService = ShiftService;

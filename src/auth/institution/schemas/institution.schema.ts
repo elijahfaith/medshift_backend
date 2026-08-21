@@ -23,6 +23,9 @@ export class Institution {
   @Prop()
   phoneNumber: string;
 
+  @Prop()
+  licenseNumber: string;
+
   @Prop({ default: 0 })
   lat: number;
 

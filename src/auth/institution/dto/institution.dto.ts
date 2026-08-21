@@ -92,3 +92,21 @@ export class ResetPasswordDto {
   })
   newPassword: string;
 }
+
+export class OnboardInstitutionDto {
+  @IsNotEmpty()
+  @IsString()
+  facilityType: string;
+
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @IsNotEmpty()
+  @IsString()
+  licenseNumber: string;
+
+  @IsNotEmpty()
+  @IsString()
+  address: string;
+}

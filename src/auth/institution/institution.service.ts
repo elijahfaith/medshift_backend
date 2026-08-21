@@ -14,6 +14,7 @@ import {
   VerifyOtpDto,
   ForgotPasswordDto,
   ResetPasswordDto,
+  OnboardInstitutionDto,
 } from './dto/institution.dto';
 
 @Injectable()
@@ -173,6 +174,27 @@ export class InstitutionAuthService {
       UserId: inst._id,
       Email: inst.email,
       Name: inst.name,
+      Status: inst.status,
+    };
+  }
+
+  async onboard(institutionId: string, onboardDto: OnboardInstitutionDto) {
+    const inst = await this.institutionModel.findById(institutionId);
+    if (!inst) {
+      throw new BadRequestException('Institution not found');
+    }
+
+    inst.facilityType = onboardDto.facilityType;
+    inst.name = onboardDto.name;
+    inst.licenseNumber = onboardDto.licenseNumber;
+    inst.address = onboardDto.address;
+    inst.status = 'UnderReview'; // Transition to admin review
+
+    await inst.save();
+
+    return {
+      message: 'Onboarding complete, pending review',
+      InstitutionId: inst._id,
       Status: inst.status,
     };
   }

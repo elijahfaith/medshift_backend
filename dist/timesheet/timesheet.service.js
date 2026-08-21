@@ -17,32 +17,65 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const timesheet_schema_1 = require("./schemas/timesheet.schema");
+const shift_schema_1 = require("../shift/schemas/shift.schema");
 let TimesheetService = class TimesheetService {
     timesheetModel;
-    constructor(timesheetModel) {
+    shiftModel;
+    constructor(timesheetModel, shiftModel) {
         this.timesheetModel = timesheetModel;
+        this.shiftModel = shiftModel;
     }
     async clockIn(createDto) {
+        const shift = await this.shiftModel.findById(createDto.shiftId).exec();
+        if (!shift)
+            throw new common_1.NotFoundException('Shift not found');
+        if (shift.accessCode !== createDto.accessCode && shift.qrCodeData !== createDto.accessCode) {
+            throw new common_1.BadRequestException('Invalid Access Code or QR Code');
+        }
         const newTimesheet = new this.timesheetModel({
             ...createDto,
             clockInTime: new Date(),
         });
         return newTimesheet.save();
     }
-    async clockOut(id) {
+    async clockOut(id, clockOutDto) {
         const timesheet = await this.timesheetModel.findById(id).exec();
         if (!timesheet)
             throw new common_1.NotFoundException('Timesheet not found');
+        const shift = await this.shiftModel.findById(timesheet.shiftId).exec();
+        if (!shift)
+            throw new common_1.NotFoundException('Shift not found');
+        if (shift.accessCode !== clockOutDto.accessCode && shift.qrCodeData !== clockOutDto.accessCode) {
+            throw new common_1.BadRequestException('Invalid Access Code or QR Code');
+        }
         timesheet.clockOutTime = new Date();
         const hours = Math.abs(timesheet.clockOutTime.getTime() - timesheet.clockInTime.getTime()) / 36e5;
         timesheet.approvedHours = hours;
         return timesheet.save();
     }
-    async getTimesheetsByProfessional(professionalId) {
-        return this.timesheetModel.find({ professionalId }).populate('shiftId').exec();
+    async getTimesheetsByProfessional(professionalId, paginationQuery) {
+        const { page = 1, limit = 10 } = paginationQuery;
+        const skip = (page - 1) * limit;
+        const [data, total] = await Promise.all([
+            this.timesheetModel
+                .find({ professionalId })
+                .skip(skip)
+                .limit(limit)
+                .populate('shiftId')
+                .exec(),
+            this.timesheetModel.countDocuments({ professionalId }).exec(),
+        ]);
+        return {
+            data,
+            total,
+            page,
+            lastPage: Math.ceil(total / limit),
+        };
     }
-    async updateTimesheetStatus(id, status) {
-        const timesheet = await this.timesheetModel.findByIdAndUpdate(id, { status }, { new: true }).exec();
+    async updateTimesheetStatus(id, updateDto) {
+        const timesheet = await this.timesheetModel
+            .findByIdAndUpdate(id, { status: updateDto.status }, { new: true })
+            .exec();
         if (!timesheet)
             throw new common_1.NotFoundException('Timesheet not found');
         return timesheet;
@@ -52,6 +85,8 @@ exports.TimesheetService = TimesheetService;
 exports.TimesheetService = TimesheetService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(timesheet_schema_1.Timesheet.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(shift_schema_1.Shift.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], TimesheetService);
 //# sourceMappingURL=timesheet.service.js.map

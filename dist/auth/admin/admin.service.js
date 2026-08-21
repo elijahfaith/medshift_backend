@@ -60,18 +60,26 @@ let AdminAuthService = class AdminAuthService {
         this.jwtService = jwtService;
     }
     async register(registerDto) {
-        const existingAdmin = await this.adminModel.findOne({ email: registerDto.email });
+        const existingAdmin = await this.adminModel.findOne({
+            email: registerDto.email,
+        });
         if (existingAdmin) {
             throw new common_1.BadRequestException('Email is already taken.');
         }
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(registerDto.password, salt);
+        const devOtp = '123456';
+        const otpExpiry = new Date();
+        otpExpiry.setMinutes(otpExpiry.getMinutes() + 10);
         const newAdmin = new this.adminModel({
             firstName: registerDto.firstName,
             lastName: registerDto.lastName,
             email: registerDto.email,
+            phoneNumber: registerDto.phone,
             passwordHash,
             status: 'Active',
+            otp: devOtp,
+            otpExpiry,
         });
         await newAdmin.save();
         const payload = { sub: newAdmin._id, email: newAdmin.email, role: 'admin' };
@@ -83,7 +91,64 @@ let AdminAuthService = class AdminAuthService {
             FirstName: newAdmin.firstName,
             LastName: newAdmin.lastName,
             Status: newAdmin.status,
+            OTP: devOtp,
         };
+    }
+    async verifyOtp(verifyOtpDto) {
+        const admin = await this.adminModel.findOne({ email: verifyOtpDto.email });
+        if (!admin) {
+            throw new common_1.BadRequestException('Invalid email or OTP');
+        }
+        if (admin.otp !== verifyOtpDto.otp || !admin.otpExpiry || admin.otpExpiry < new Date()) {
+            throw new common_1.BadRequestException('Invalid or expired OTP');
+        }
+        admin.status = 'Active';
+        admin.otp = undefined;
+        admin.otpExpiry = undefined;
+        await admin.save();
+        const payload = { sub: admin._id, email: admin.email, role: 'admin' };
+        const token = this.jwtService.sign(payload);
+        return {
+            message: 'Email verified successfully',
+            Token: token,
+            UserId: admin._id,
+            Email: admin.email,
+            FirstName: admin.firstName,
+            LastName: admin.lastName,
+            Status: admin.status,
+        };
+    }
+    async forgotPassword(forgotPasswordDto) {
+        const admin = await this.adminModel.findOne({ email: forgotPasswordDto.email });
+        if (!admin) {
+            return { message: 'If an account with that email exists, an OTP has been sent.' };
+        }
+        const devOtp = '123456';
+        const otpExpiry = new Date();
+        otpExpiry.setMinutes(otpExpiry.getMinutes() + 10);
+        admin.otp = devOtp;
+        admin.otpExpiry = otpExpiry;
+        await admin.save();
+        return {
+            message: 'OTP sent successfully',
+            OTP: devOtp
+        };
+    }
+    async resetPassword(resetDto) {
+        const admin = await this.adminModel.findOne({ email: resetDto.email });
+        if (!admin) {
+            throw new common_1.BadRequestException('Invalid email or OTP');
+        }
+        if (admin.otp !== resetDto.otp || !admin.otpExpiry || admin.otpExpiry < new Date()) {
+            throw new common_1.BadRequestException('Invalid or expired OTP');
+        }
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(resetDto.newPassword, salt);
+        admin.passwordHash = passwordHash;
+        admin.otp = undefined;
+        admin.otpExpiry = undefined;
+        await admin.save();
+        return { message: 'Password reset successfully' };
     }
     async login(loginDto) {
         const admin = await this.adminModel.findOne({ email: loginDto.email });

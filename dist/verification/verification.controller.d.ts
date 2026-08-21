@@ -1,36 +1,47 @@
 import { VerificationService } from './verification.service';
-import { VerificationStatus } from './schemas/verification-request.schema';
+import { CreateLicensingCouncilDto, CreateVerificationRequestDto, UpdateVerificationStatusDto } from './dto/verification.dto';
+import { PaginationQueryDto } from '../common/dto/pagination.dto';
 export declare class VerificationController {
     private readonly verificationService;
     constructor(verificationService: VerificationService);
-    createCouncil(body: any): Promise<import("mongoose").Document<unknown, {}, import("./schemas/licensing-council.schema").LicensingCouncilDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/licensing-council.schema").LicensingCouncil & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    createCouncil(createDto: CreateLicensingCouncilDto): Promise<import("mongoose").Document<unknown, {}, import("./schemas/licensing-council.schema").LicensingCouncilDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/licensing-council.schema").LicensingCouncil & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {
         __v: number;
     } & {
         id: string;
     }>;
-    getCouncils(): Promise<(import("mongoose").Document<unknown, {}, import("./schemas/licensing-council.schema").LicensingCouncilDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/licensing-council.schema").LicensingCouncil & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
-        _id: import("mongoose").Types.ObjectId;
-    }> & {
-        __v: number;
-    } & {
-        id: string;
-    })[]>;
-    submitRequest(body: any): Promise<import("mongoose").Document<unknown, {}, import("./schemas/verification-request.schema").VerificationRequestDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/verification-request.schema").VerificationRequest & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    getCouncils(paginationQuery: PaginationQueryDto): Promise<{
+        data: (import("mongoose").Document<unknown, {}, import("./schemas/licensing-council.schema").LicensingCouncilDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/licensing-council.schema").LicensingCouncil & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+            _id: import("mongoose").Types.ObjectId;
+        }> & {
+            __v: number;
+        } & {
+            id: string;
+        })[];
+        total: number;
+        page: number;
+        lastPage: number;
+    }>;
+    submitRequest(createDto: CreateVerificationRequestDto): Promise<import("mongoose").Document<unknown, {}, import("./schemas/verification-request.schema").VerificationRequestDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/verification-request.schema").VerificationRequest & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {
         __v: number;
     } & {
         id: string;
     }>;
-    getAllRequests(): Promise<(import("mongoose").Document<unknown, {}, import("./schemas/verification-request.schema").VerificationRequestDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/verification-request.schema").VerificationRequest & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
-        _id: import("mongoose").Types.ObjectId;
-    }> & {
-        __v: number;
-    } & {
-        id: string;
-    })[]>;
+    getAllRequests(paginationQuery: PaginationQueryDto): Promise<{
+        data: (import("mongoose").Document<unknown, {}, import("./schemas/verification-request.schema").VerificationRequestDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/verification-request.schema").VerificationRequest & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+            _id: import("mongoose").Types.ObjectId;
+        }> & {
+            __v: number;
+        } & {
+            id: string;
+        })[];
+        total: number;
+        page: number;
+        lastPage: number;
+    }>;
     getRequestById(id: string): Promise<import("mongoose").Document<unknown, {}, import("./schemas/verification-request.schema").VerificationRequestDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/verification-request.schema").VerificationRequest & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {
@@ -38,10 +49,7 @@ export declare class VerificationController {
     } & {
         id: string;
     }>;
-    updateRequestStatus(id: string, body: {
-        status: VerificationStatus;
-        adminNotes?: string;
-    }): Promise<import("mongoose").Document<unknown, {}, import("./schemas/verification-request.schema").VerificationRequestDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/verification-request.schema").VerificationRequest & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    updateRequestStatus(id: string, updateDto: UpdateVerificationStatusDto): Promise<import("mongoose").Document<unknown, {}, import("./schemas/verification-request.schema").VerificationRequestDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/verification-request.schema").VerificationRequest & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {
         __v: number;

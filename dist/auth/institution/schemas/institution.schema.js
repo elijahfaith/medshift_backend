@@ -17,10 +17,14 @@ let Institution = class Institution {
     name;
     facilityType;
     address;
+    phoneNumber;
+    licenseNumber;
     lat;
     lng;
     isVerified;
     status;
+    otp;
+    otpExpiry;
 };
 exports.Institution = Institution;
 __decorate([
@@ -44,6 +48,14 @@ __decorate([
     __metadata("design:type", String)
 ], Institution.prototype, "address", void 0);
 __decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Institution.prototype, "phoneNumber", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Institution.prototype, "licenseNumber", void 0);
+__decorate([
     (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], Institution.prototype, "lat", void 0);
@@ -59,6 +71,14 @@ __decorate([
     (0, mongoose_1.Prop)({ default: 'Active' }),
     __metadata("design:type", String)
 ], Institution.prototype, "status", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Institution.prototype, "otp", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Date)
+], Institution.prototype, "otpExpiry", void 0);
 exports.Institution = Institution = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Institution);

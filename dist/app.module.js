@@ -9,6 +9,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
+const throttler_1 = require("@nestjs/throttler");
+const core_1 = require("@nestjs/core");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const admin_module_1 = require("./auth/admin/admin.module");
@@ -19,6 +21,10 @@ const timesheet_module_1 = require("./timesheet/timesheet.module");
 const payment_module_1 = require("./payment/payment.module");
 const verification_module_1 = require("./verification/verification.module");
 const tracking_module_1 = require("./tracking/tracking.module");
+const wallet_module_1 = require("./wallet/wallet.module");
+const jwt_strategy_1 = require("./auth/guards/jwt.strategy");
+const review_module_1 = require("./review/review.module");
+const report_module_1 = require("./report/report.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,6 +32,12 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/medshift'),
+            throttler_1.ThrottlerModule.forRoot([
+                {
+                    ttl: 60000,
+                    limit: 100,
+                },
+            ]),
             admin_module_1.AdminAuthModule,
             user_module_1.UserAuthModule,
             institution_module_1.InstitutionAuthModule,
@@ -34,9 +46,19 @@ exports.AppModule = AppModule = __decorate([
             payment_module_1.PaymentModule,
             verification_module_1.VerificationModule,
             tracking_module_1.TrackingModule,
+            wallet_module_1.WalletModule,
+            review_module_1.ReviewModule,
+            report_module_1.ReportModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [
+            app_service_1.AppService,
+            jwt_strategy_1.JwtStrategy,
+            {
+                provide: core_1.APP_GUARD,
+                useClass: throttler_1.ThrottlerGuard,
+            },
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
