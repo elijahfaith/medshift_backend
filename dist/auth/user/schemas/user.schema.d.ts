@@ -12,6 +12,7 @@ export declare class User {
     isVerified: boolean;
     isListed: boolean;
     rating: number;
+    totalReviews: number;
     shiftsCompleted: number;
     status: string;
     otp?: string;
@@ -117,6 +118,15 @@ export declare const UserSchema: import("mongoose").Schema<User, import("mongoos
         id: string;
     }>> | undefined;
     rating?: import("mongoose").SchemaDefinitionProperty<number, User, Document<unknown, {}, User, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<User & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    totalReviews?: import("mongoose").SchemaDefinitionProperty<number, User, Document<unknown, {}, User, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<User & {
         _id: import("mongoose").Types.ObjectId;

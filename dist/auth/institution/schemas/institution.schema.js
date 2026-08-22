@@ -22,6 +22,8 @@ let Institution = class Institution {
     lat;
     lng;
     isVerified;
+    rating;
+    totalReviews;
     status;
     otp;
     otpExpiry;
@@ -67,6 +69,14 @@ __decorate([
     (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)
 ], Institution.prototype, "isVerified", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Institution.prototype, "rating", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], Institution.prototype, "totalReviews", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: 'Active' }),
     __metadata("design:type", String)

@@ -11,6 +11,8 @@ export declare class Institution {
     lat: number;
     lng: number;
     isVerified: boolean;
+    rating: number;
+    totalReviews: number;
     status: string;
     otp?: string;
     otpExpiry?: Date;
@@ -106,6 +108,24 @@ export declare const InstitutionSchema: import("mongoose").Schema<Institution, i
         id: string;
     }>> | undefined;
     isVerified?: import("mongoose").SchemaDefinitionProperty<boolean, Institution, Document<unknown, {}, Institution, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Institution & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    rating?: import("mongoose").SchemaDefinitionProperty<number, Institution, Document<unknown, {}, Institution, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Institution & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    totalReviews?: import("mongoose").SchemaDefinitionProperty<number, Institution, Document<unknown, {}, Institution, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Institution & {
         _id: import("mongoose").Types.ObjectId;

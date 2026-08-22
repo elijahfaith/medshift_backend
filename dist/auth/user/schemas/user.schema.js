@@ -23,6 +23,7 @@ let User = class User {
     isVerified;
     isListed;
     rating;
+    totalReviews;
     shiftsCompleted;
     status;
     otp;
@@ -73,6 +74,10 @@ __decorate([
     (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)
 ], User.prototype, "rating", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 0 }),
+    __metadata("design:type", Number)
+], User.prototype, "totalReviews", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)

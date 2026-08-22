@@ -22,7 +22,7 @@ export class ReviewService {
     await review.save();
     
     // Update reputation asynchronously
-    this._updateReputation(createDto.revieweeId, createDto.type);
+    this._updateReputation(createDto.revieweeId, createDto.type as 'InstitutionToPro' | 'ProToInstitution');
     
     return review;
   }
@@ -65,7 +65,7 @@ export class ReviewService {
       .exec();
     if (!review) throw new NotFoundException('Review not found');
 
-    this._updateReputation(review.revieweeId.toString(), review.type);
+    this._updateReputation(review.revieweeId.toString(), review.type as 'InstitutionToPro' | 'ProToInstitution');
 
     return review;
   }
