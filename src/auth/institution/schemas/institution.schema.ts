@@ -35,6 +35,12 @@ export class Institution {
   @Prop({ default: false })
   isVerified: boolean;
 
+  @Prop({ default: 0 })
+  rating: number;
+
+  @Prop({ default: 0 })
+  totalReviews: number;
+
   @Prop({ default: 'Active' })
   status: string;
 

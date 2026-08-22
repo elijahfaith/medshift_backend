@@ -39,6 +39,9 @@ export class User {
   rating: number;
 
   @Prop({ default: 0 })
+  totalReviews: number;
+
+  @Prop({ default: 0 })
   shiftsCompleted: number;
 
   @Prop({ default: 'PendingVerification' })
