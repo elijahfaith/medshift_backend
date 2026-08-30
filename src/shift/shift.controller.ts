@@ -32,6 +32,14 @@ export class ShiftController {
     return this.shiftService.getShifts(paginationQuery);
   }
 
+  @Get('institution/:id')
+  async findByInstitution(
+    @Param('id') institutionId: string,
+    @Query() paginationQuery: PaginationQueryDto,
+  ) {
+    return this.shiftService.getShiftsByInstitution(institutionId, paginationQuery);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.shiftService.getShiftById(id);

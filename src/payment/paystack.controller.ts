@@ -8,6 +8,7 @@ import {
   UseGuards,
   Request,
   HttpCode,
+  Body,
 } from '@nestjs/common';
 import { PaystackService } from './paystack.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -15,6 +16,20 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @Controller('payment')
 export class PaystackController {
   constructor(private readonly paystackService: PaystackService) {}
+
+  @Get('registration-fee')
+  async getRegistrationFee() {
+    const config = await this.paystackService.getRegistrationFee();
+    return config;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('registration-fee')
+  async updateRegistrationFee(@Body() body: { amountNaira: number }) {
+    // In a real app, check if user is admin here
+    await this.paystackService.updateRegistrationFee(body.amountNaira);
+    return { success: true, newAmountNaira: body.amountNaira };
+  }
 
   /**
    * Called by Flutter after user taps "Pay via Paystack"

@@ -46,6 +46,28 @@ export class ShiftService {
     };
   }
 
+  async getShiftsByInstitution(institutionId: string, paginationQuery: PaginationQueryDto) {
+    const { page = 1, limit = 10 } = paginationQuery;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.shiftModel
+        .find({ organizationId: new Types.ObjectId(institutionId) })
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .exec(),
+      this.shiftModel.countDocuments({ organizationId: new Types.ObjectId(institutionId) }).exec(),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      lastPage: Math.ceil(total / limit),
+    };
+  }
+
   async getShiftById(id: string) {
     const shift = await this.shiftModel.findById(id).exec();
     if (!shift) throw new NotFoundException('Shift not found');

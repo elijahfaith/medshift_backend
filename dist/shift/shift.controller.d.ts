@@ -35,6 +35,18 @@ export declare class ShiftController {
         page: number;
         lastPage: number;
     }>;
+    findByInstitution(institutionId: string, paginationQuery: PaginationQueryDto): Promise<{
+        data: (import("mongoose").Document<unknown, {}, import("./schemas/shift.schema").ShiftDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/shift.schema").Shift & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+            _id: import("mongoose").Types.ObjectId;
+        }> & {
+            __v: number;
+        } & {
+            id: string;
+        })[];
+        total: number;
+        page: number;
+        lastPage: number;
+    }>;
     findOne(id: string): Promise<import("mongoose").Document<unknown, {}, import("./schemas/shift.schema").ShiftDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/shift.schema").Shift & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {

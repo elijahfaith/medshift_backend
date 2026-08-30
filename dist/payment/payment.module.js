@@ -15,6 +15,7 @@ const payment_schema_1 = require("./schemas/payment.schema");
 const paystack_controller_1 = require("./paystack.controller");
 const paystack_service_1 = require("./paystack.service");
 const user_schema_1 = require("../auth/user/schemas/user.schema");
+const config_schema_1 = require("./schemas/config.schema");
 let PaymentModule = class PaymentModule {
 };
 exports.PaymentModule = PaymentModule;
@@ -24,6 +25,7 @@ exports.PaymentModule = PaymentModule = __decorate([
             mongoose_1.MongooseModule.forFeature([
                 { name: payment_schema_1.EscrowPayment.name, schema: payment_schema_1.EscrowPaymentSchema },
                 { name: user_schema_1.User.name, schema: user_schema_1.UserSchema },
+                { name: config_schema_1.SystemConfig.name, schema: config_schema_1.SystemConfigSchema },
             ]),
         ],
         controllers: [payment_controller_1.PaymentController, paystack_controller_1.PaystackController],

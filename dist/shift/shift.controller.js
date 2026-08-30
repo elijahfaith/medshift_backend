@@ -31,6 +31,9 @@ let ShiftController = class ShiftController {
     async findAll(paginationQuery) {
         return this.shiftService.getShifts(paginationQuery);
     }
+    async findByInstitution(institutionId, paginationQuery) {
+        return this.shiftService.getShiftsByInstitution(institutionId, paginationQuery);
+    }
     async findOne(id) {
         return this.shiftService.getShiftById(id);
     }
@@ -72,6 +75,14 @@ __decorate([
     __metadata("design:paramtypes", [pagination_dto_1.PaginationQueryDto]),
     __metadata("design:returntype", Promise)
 ], ShiftController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('institution/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, pagination_dto_1.PaginationQueryDto]),
+    __metadata("design:returntype", Promise)
+], ShiftController.prototype, "findByInstitution", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

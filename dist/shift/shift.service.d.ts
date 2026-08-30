@@ -26,6 +26,18 @@ export declare class ShiftService {
         page: number;
         lastPage: number;
     }>;
+    getShiftsByInstitution(institutionId: string, paginationQuery: PaginationQueryDto): Promise<{
+        data: (import("mongoose").Document<unknown, {}, ShiftDocument, {}, import("mongoose").DefaultSchemaOptions> & Shift & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+            _id: Types.ObjectId;
+        }> & {
+            __v: number;
+        } & {
+            id: string;
+        })[];
+        total: number;
+        page: number;
+        lastPage: number;
+    }>;
     getShiftById(id: string): Promise<import("mongoose").Document<unknown, {}, ShiftDocument, {}, import("mongoose").DefaultSchemaOptions> & Shift & import("mongoose").Document<Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: Types.ObjectId;
     }> & {

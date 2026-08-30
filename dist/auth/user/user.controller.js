@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserAuthController = void 0;
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
 const user_service_1 = require("./user.service");
 const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
 const user_dto_1 = require("./dto/user.dto");
@@ -45,6 +46,20 @@ let UserAuthController = class UserAuthController {
     }
     async changePassword(req, changePasswordDto) {
         return this.userAuthService.changePassword(req.user.userId || req.user.sub, changePasswordDto);
+    }
+    async uploadCv(req, file) {
+        const mockUrl = `https://mock-storage.com/cv/${Date.now()}`;
+        await this.userAuthService.updateProfile(req.user.userId || req.user.sub, { cvUrl: mockUrl });
+        return { url: mockUrl };
+    }
+    async uploadProfilePicture(req, file) {
+        const mockUrl = `https://mock-storage.com/profile/${Date.now()}`;
+        await this.userAuthService.updateProfile(req.user.userId || req.user.sub, { profilePictureUrl: mockUrl });
+        return { url: mockUrl };
+    }
+    async verifyPayment(req, body) {
+        await this.userAuthService.updateProfile(req.user.userId || req.user.sub, { hasPaidRegistrationFee: true });
+        return { success: true, message: 'Payment verified successfully.' };
     }
 };
 exports.UserAuthController = UserAuthController;
@@ -109,6 +124,35 @@ __decorate([
     __metadata("design:paramtypes", [Object, user_dto_1.ChangePasswordDto]),
     __metadata("design:returntype", Promise)
 ], UserAuthController.prototype, "changePassword", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('upload-cv'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UserAuthController.prototype, "uploadCv", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('upload-profile-picture'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UserAuthController.prototype, "uploadProfilePicture", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('verify-payment'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UserAuthController.prototype, "verifyPayment", null);
 exports.UserAuthController = UserAuthController = __decorate([
     (0, common_1.Controller)('auth/user'),
     __metadata("design:paramtypes", [user_service_1.UserAuthService])

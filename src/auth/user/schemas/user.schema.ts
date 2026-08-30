@@ -23,6 +23,12 @@ export class User {
   @Prop()
   profilePictureUrl: string;
 
+  @Prop()
+  cvUrl: string;
+
+  @Prop({ default: false })
+  hasPaidRegistrationFee: boolean;
+
   @Prop({ default: '' })
   profession: string;
 

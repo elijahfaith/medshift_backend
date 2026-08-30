@@ -18,6 +18,8 @@ let User = class User {
     lastName;
     phoneNumber;
     profilePictureUrl;
+    cvUrl;
+    hasPaidRegistrationFee;
     profession;
     specialty;
     isVerified;
@@ -54,6 +56,14 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], User.prototype, "profilePictureUrl", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], User.prototype, "cvUrl", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: false }),
+    __metadata("design:type", Boolean)
+], User.prototype, "hasPaidRegistrationFee", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: '' }),
     __metadata("design:type", String)

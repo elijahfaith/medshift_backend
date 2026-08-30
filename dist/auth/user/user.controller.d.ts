@@ -75,4 +75,16 @@ export declare class UserAuthController {
     changePassword(req: any, changePasswordDto: ChangePasswordDto): Promise<{
         message: string;
     }>;
+    uploadCv(req: any, file: any): Promise<{
+        url: string;
+    }>;
+    uploadProfilePicture(req: any, file: any): Promise<{
+        url: string;
+    }>;
+    verifyPayment(req: any, body: {
+        reference: string;
+    }): Promise<{
+        success: boolean;
+        message: string;
+    }>;
 }

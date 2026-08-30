@@ -8,28 +8,50 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from '../auth/user/schemas/user.schema';
 import * as crypto from 'crypto';
 import * as https from 'https';
-
-const LISTING_FEE_KOBO = 400000; // ₦4,000 in kobo
+import { SystemConfig, SystemConfigDocument } from './schemas/config.schema';
 
 @Injectable()
 export class PaystackService {
   private readonly secretKey = process.env.PAYSTACK_SECRET_KEY;
+  private readonly publicKey = process.env.PAYSTACK_PUBLIC_KEY;
   private readonly baseUrl = 'https://api.paystack.co';
 
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(SystemConfig.name) private configModel: Model<SystemConfigDocument>,
   ) {}
+
+  async getRegistrationFee(): Promise<{ feeInKobo: number; feeInNaira: number; publicKey: string }> {
+    let config = await this.configModel.findOne({ configId: 'default' });
+    if (!config) {
+      config = await this.configModel.create({ configId: 'default', registrationFeeAmount: 4000 });
+    }
+    return {
+      feeInKobo: config.registrationFeeAmount * 100,
+      feeInNaira: config.registrationFeeAmount,
+      publicKey: this.publicKey || '',
+    };
+  }
+
+  async updateRegistrationFee(amountNaira: number): Promise<void> {
+    await this.configModel.findOneAndUpdate(
+      { configId: 'default' },
+      { registrationFeeAmount: amountNaira },
+      { upsert: true }
+    );
+  }
 
   async initializeListingPayment(userId: string, email: string) {
     if (!this.secretKey) {
       throw new InternalServerErrorException('Paystack secret key not configured');
     }
 
+    const { feeInKobo } = await this.getRegistrationFee();
     const reference = `listing_${userId}_${Date.now()}`;
 
     const payload = JSON.stringify({
       email,
-      amount: LISTING_FEE_KOBO,
+      amount: feeInKobo,
       reference,
       currency: 'NGN',
       metadata: {
@@ -107,14 +129,15 @@ export class PaystackService {
               resolve({ success: false, message: 'Payment not successful' });
               return;
             }
-            if (parsed.data.amount < LISTING_FEE_KOBO) {
+            const { feeInKobo } = await this.getRegistrationFee();
+            if (parsed.data.amount < feeInKobo) {
               resolve({ success: false, message: 'Incorrect payment amount' });
               return;
             }
 
             const userId = parsed.data.metadata?.userId;
             if (userId) {
-              await this.userModel.findByIdAndUpdate(userId, { isListed: true });
+              await this.userModel.findByIdAndUpdate(userId, { isListed: true, hasPaidRegistrationFee: true });
             }
             resolve({ success: true, message: 'Payment verified and account activated' });
           } catch (e) {
@@ -144,15 +167,16 @@ export class PaystackService {
     const event = JSON.parse(rawBody.toString());
 
     if (event.event === 'charge.success') {
+      const { feeInKobo } = await this.getRegistrationFee();
       const data = event.data;
       if (
         data.status === 'success' &&
-        data.amount >= LISTING_FEE_KOBO &&
+        data.amount >= feeInKobo &&
         data.metadata?.purpose === 'listing_fee'
       ) {
         const userId = data.metadata?.userId;
         if (userId) {
-          await this.userModel.findByIdAndUpdate(userId, { isListed: true });
+          await this.userModel.findByIdAndUpdate(userId, { isListed: true, hasPaidRegistrationFee: true });
         }
       }
     }
