@@ -44,7 +44,7 @@ export class InstitutionAuthController {
   @UseGuards(JwtAuthGuard)
   @Put('onboard')
   async onboard(@Req() req: any, @Body() onboardDto: OnboardInstitutionDto) {
-    const institutionId = req.user.sub;
+    const institutionId = req.user.userId;   // JwtStrategy returns { userId, email, clientType }
     return this.institutionAuthService.onboard(institutionId, onboardDto);
   }
 }

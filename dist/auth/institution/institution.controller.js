@@ -38,7 +38,7 @@ let InstitutionAuthController = class InstitutionAuthController {
         return this.institutionAuthService.resetPassword(resetPasswordDto);
     }
     async onboard(req, onboardDto) {
-        const institutionId = req.user.sub;
+        const institutionId = req.user.userId;
         return this.institutionAuthService.onboard(institutionId, onboardDto);
     }
 };
