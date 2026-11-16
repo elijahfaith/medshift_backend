@@ -1,1 +1,1 @@
-export {};
+import './sanitize-env';

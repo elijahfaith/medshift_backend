@@ -17,11 +17,19 @@ export class CloudinaryService {
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
     const cloudinaryUrl = process.env.CLOUDINARY_URL;
 
-    if (cloudinaryUrl) {
-      cloudinary.config();
-      this.isConfigured = true;
-      this.logger.log('Cloudinary successfully initialized via CLOUDINARY_URL.');
-    } else if (cloudName && apiKey && apiSecret) {
+    if (cloudinaryUrl && !cloudinaryUrl.includes('<') && !cloudinaryUrl.includes('>')) {
+      try {
+        new URL(cloudinaryUrl);
+        cloudinary.config();
+        this.isConfigured = true;
+        this.logger.log('Cloudinary successfully initialized via CLOUDINARY_URL.');
+        return;
+      } catch (e) {
+        this.logger.warn('Failed to parse CLOUDINARY_URL, checking individual variables...');
+      }
+    }
+
+    if (cloudName && apiKey && apiSecret && !cloudName.includes('<') && !cloudName.includes('>')) {
       cloudinary.config({
         cloud_name: cloudName.trim(),
         api_key: apiKey.trim(),
@@ -32,7 +40,7 @@ export class CloudinaryService {
       this.logger.log(`Cloudinary successfully initialized for cloud: ${cloudName}`);
     } else {
       this.logger.warn(
-        'Cloudinary environment variables not detected (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET or CLOUDINARY_URL). Falling back to disk storage.',
+        'Cloudinary environment variables not detected or contain unreplaced placeholders. Falling back to disk storage.',
       );
     }
   }
