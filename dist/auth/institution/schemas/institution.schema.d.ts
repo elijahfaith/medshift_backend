@@ -8,6 +8,8 @@ export declare class Institution {
     address: string;
     phoneNumber: string;
     licenseNumber: string;
+    logoUrl?: string;
+    adminName?: string;
     lat: number;
     lng: number;
     isVerified: boolean;
@@ -81,6 +83,24 @@ export declare const InstitutionSchema: import("mongoose").Schema<Institution, i
         id: string;
     }>> | undefined;
     licenseNumber?: import("mongoose").SchemaDefinitionProperty<string, Institution, Document<unknown, {}, Institution, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Institution & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    logoUrl?: import("mongoose").SchemaDefinitionProperty<string | undefined, Institution, Document<unknown, {}, Institution, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Institution & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    adminName?: import("mongoose").SchemaDefinitionProperty<string | undefined, Institution, Document<unknown, {}, Institution, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Institution & {
         _id: import("mongoose").Types.ObjectId;

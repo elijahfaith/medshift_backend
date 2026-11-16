@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Timesheet, TimesheetDocument } from './schemas/timesheet.schema';
 import { Shift, ShiftDocument } from '../shift/schemas/shift.schema';
 import {
@@ -88,5 +88,26 @@ export class TimesheetService {
       .exec();
     if (!timesheet) throw new NotFoundException('Timesheet not found');
     return timesheet;
+  }
+
+  async getTimesheetsByInstitution(institutionId: string) {
+    let query: any = {};
+    try {
+      const shifts = await this.shiftModel
+        .find({ organizationId: new Types.ObjectId(institutionId) })
+        .select('_id')
+        .exec();
+      const shiftIds = shifts.map((s) => s._id);
+      query = { shiftId: { $in: shiftIds } };
+    } catch (_) {
+      query = {};
+    }
+
+    return this.timesheetModel
+      .find(query)
+      .populate('shiftId')
+      .populate('professionalId', 'firstName lastName email phoneNumber profession rating profilePictureUrl')
+      .sort({ createdAt: -1 })
+      .exec();
   }
 }

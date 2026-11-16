@@ -5,6 +5,7 @@ import {
   MinLength,
   Matches,
   IsOptional,
+  IsBoolean,
 } from 'class-validator';
 
 export class UserRegisterDto {
@@ -131,4 +132,16 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   profilePictureUrl?: string | null;
+
+  @IsOptional()
+  @IsString()
+  cvUrl?: string | null;
+
+  @IsOptional()
+  @IsBoolean()
+  hasPaidRegistrationFee?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isListed?: boolean;
 }

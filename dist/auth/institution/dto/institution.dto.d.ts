@@ -31,3 +31,12 @@ export declare class OnboardInstitutionDto {
     licenseNumber: string;
     address: string;
 }
+export declare class UpdateInstitutionProfileDto {
+    name?: string;
+    facilityType?: string;
+    licenseNumber?: string;
+    address?: string;
+    phone?: string;
+    adminName?: string;
+    logoUrl?: string;
+}

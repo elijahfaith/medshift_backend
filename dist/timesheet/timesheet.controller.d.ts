@@ -30,6 +30,13 @@ export declare class TimesheetController {
         page: number;
         lastPage: number;
     }>;
+    getByInstitution(institutionId: string): Promise<(import("mongoose").Document<unknown, {}, import("./schemas/timesheet.schema").TimesheetDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/timesheet.schema").Timesheet & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    })[]>;
     updateStatus(id: string, updateDto: UpdateTimesheetStatusDto): Promise<import("mongoose").Document<unknown, {}, import("./schemas/timesheet.schema").TimesheetDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/timesheet.schema").Timesheet & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {

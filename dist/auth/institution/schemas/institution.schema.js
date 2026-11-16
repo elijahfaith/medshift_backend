@@ -19,6 +19,8 @@ let Institution = class Institution {
     address;
     phoneNumber;
     licenseNumber;
+    logoUrl;
+    adminName;
     lat;
     lng;
     isVerified;
@@ -57,6 +59,14 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], Institution.prototype, "licenseNumber", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Institution.prototype, "logoUrl", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Institution.prototype, "adminName", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: 0 }),
     __metadata("design:type", Number)

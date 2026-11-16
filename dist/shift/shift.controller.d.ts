@@ -75,6 +75,13 @@ export declare class ShiftController {
     } & {
         id: string;
     })[]>;
+    hireApplicant(id: string): Promise<import("mongoose").Document<unknown, {}, import("./schemas/shift-applicant.schema").ShiftApplicantDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/shift-applicant.schema").ShiftApplicant & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    }>;
     getUpcomingShifts(professionalId: string): Promise<(import("mongoose").Document<unknown, {}, import("./schemas/shift-applicant.schema").ShiftApplicantDocument, {}, import("mongoose").DefaultSchemaOptions> & import("./schemas/shift-applicant.schema").ShiftApplicant & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {

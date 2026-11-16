@@ -13,13 +13,23 @@ const jwt_1 = require("@nestjs/jwt");
 const admin_controller_1 = require("./admin.controller");
 const admin_service_1 = require("./admin.service");
 const admin_schema_1 = require("./schemas/admin.schema");
+const institution_schema_1 = require("../institution/schemas/institution.schema");
+const user_schema_1 = require("../user/schemas/user.schema");
+const shift_schema_1 = require("../../shift/schemas/shift.schema");
+const report_schema_1 = require("../../report/schemas/report.schema");
 let AdminAuthModule = class AdminAuthModule {
 };
 exports.AdminAuthModule = AdminAuthModule;
 exports.AdminAuthModule = AdminAuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: admin_schema_1.Admin.name, schema: admin_schema_1.AdminSchema }]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: admin_schema_1.Admin.name, schema: admin_schema_1.AdminSchema },
+                { name: institution_schema_1.Institution.name, schema: institution_schema_1.InstitutionSchema },
+                { name: user_schema_1.User.name, schema: user_schema_1.UserSchema },
+                { name: shift_schema_1.Shift.name, schema: shift_schema_1.ShiftSchema },
+                { name: report_schema_1.Report.name, schema: report_schema_1.ReportSchema },
+            ]),
             jwt_1.JwtModule.register({
                 secret: process.env.JWT_SECRET || 'fallback_secret',
                 signOptions: { expiresIn: '7d' },

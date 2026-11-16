@@ -2,18 +2,27 @@ import {
   Injectable,
   UnauthorizedException,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Admin, AdminDocument } from './schemas/admin.schema';
+import { Institution, InstitutionDocument } from '../institution/schemas/institution.schema';
+import { User, UserDocument } from '../user/schemas/user.schema';
+import { Shift, ShiftDocument } from '../../shift/schemas/shift.schema';
+import { Report, ReportDocument } from '../../report/schemas/report.schema';
 import { AdminRegisterDto, AdminLoginDto, VerifyOtpDto, ForgotPasswordDto, ResetPasswordDto } from './dto/admin.dto';
 
 @Injectable()
 export class AdminAuthService {
   constructor(
     @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
+    @InjectModel(Institution.name) private institutionModel: Model<InstitutionDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Shift.name) private shiftModel: Model<ShiftDocument>,
+    @InjectModel(Report.name) private reportModel: Model<ReportDocument>,
     private jwtService: JwtService,
   ) {}
 
@@ -155,5 +164,93 @@ export class AdminAuthService {
       LastName: admin.lastName,
       Status: admin.status,
     };
+  }
+
+  // ==========================================
+  // ADMIN PLATFORM MANAGEMENT METHODS
+  // ==========================================
+
+  async getDashboardOverview() {
+    const [
+      activeProsCount,
+      pendingProsCount,
+      verifiedInstitutionsCount,
+      pendingInstitutionsCount,
+      shifts,
+      reportsCount,
+    ] = await Promise.all([
+      this.userModel.countDocuments({ isVerified: true }),
+      this.userModel.countDocuments({ isVerified: false }),
+      this.institutionModel.countDocuments({ status: 'Active' }),
+      this.institutionModel.countDocuments({ status: { $in: ['UnderReview', 'PendingVerification'] } }),
+      this.shiftModel.find().select('estimatedTotal hourlyRate status').exec(),
+      this.reportModel.countDocuments({ status: 'Pending Review' }),
+    ]);
+
+    const totalEscrow = shifts
+      .filter((s) => s.status !== 'Completed' && s.status !== 'Cancelled')
+      .reduce((sum, s) => sum + (s.estimatedTotal || 0), 0);
+
+    return {
+      activeProfessionals: activeProsCount,
+      pendingVerifications: pendingProsCount + pendingInstitutionsCount,
+      escrowHeld: totalEscrow,
+      reportedJobsQueue: reportsCount,
+      totalInstitutions: verifiedInstitutionsCount + pendingInstitutionsCount,
+    };
+  }
+
+  async getAllInstitutions() {
+    return this.institutionModel
+      .find()
+      .select('-passwordHash -otp -otpExpiry')
+      .sort({ createdAt: -1 })
+      .exec();
+  }
+
+  async updateInstitutionStatus(institutionId: string, status: string) {
+    const inst = await this.institutionModel.findByIdAndUpdate(
+      institutionId,
+      { status, isVerified: status === 'Active' || status === 'Verified' },
+      { new: true }
+    ).select('-passwordHash -otp -otpExpiry');
+    if (!inst) throw new NotFoundException('Institution not found');
+    return inst;
+  }
+
+  async getAllUsers() {
+    return this.userModel
+      .find()
+      .select('-passwordHash -otp -otpExpiry')
+      .sort({ createdAt: -1 })
+      .exec();
+  }
+
+  async updateUserVerification(userId: string, isVerified: boolean) {
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      { isVerified },
+      { new: true }
+    ).select('-passwordHash -otp -otpExpiry');
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
+  async getAllShifts() {
+    return this.shiftModel
+      .find()
+      .populate('organizationId', 'name facilityType address')
+      .sort({ createdAt: -1 })
+      .exec();
+  }
+
+  async approveShiftListing(shiftId: string) {
+    const shift = await this.shiftModel.findByIdAndUpdate(
+      shiftId,
+      { status: 'Open' },
+      { new: true }
+    );
+    if (!shift) throw new NotFoundException('Shift not found');
+    return shift;
   }
 }

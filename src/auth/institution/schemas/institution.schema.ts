@@ -26,6 +26,12 @@ export class Institution {
   @Prop()
   licenseNumber: string;
 
+  @Prop()
+  logoUrl?: string;
+
+  @Prop()
+  adminName?: string;
+
   @Prop({ default: 0 })
   lat: number;
 

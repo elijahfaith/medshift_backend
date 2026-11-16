@@ -16,6 +16,8 @@ exports.AdminAuthController = void 0;
 const common_1 = require("@nestjs/common");
 const admin_service_1 = require("./admin.service");
 const admin_dto_1 = require("./dto/admin.dto");
+const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
+const roles_guard_1 = require("../guards/roles.guard");
 let AdminAuthController = class AdminAuthController {
     adminAuthService;
     constructor(adminAuthService) {
@@ -35,6 +37,27 @@ let AdminAuthController = class AdminAuthController {
     }
     async resetPassword(resetPasswordDto) {
         return this.adminAuthService.resetPassword(resetPasswordDto);
+    }
+    async getStats() {
+        return this.adminAuthService.getDashboardOverview();
+    }
+    async getInstitutions() {
+        return this.adminAuthService.getAllInstitutions();
+    }
+    async updateInstitutionStatus(id, status) {
+        return this.adminAuthService.updateInstitutionStatus(id, status);
+    }
+    async getUsers() {
+        return this.adminAuthService.getAllUsers();
+    }
+    async updateUserVerification(id, isVerified) {
+        return this.adminAuthService.updateUserVerification(id, isVerified);
+    }
+    async getShifts() {
+        return this.adminAuthService.getAllShifts();
+    }
+    async approveShift(id) {
+        return this.adminAuthService.approveShiftListing(id);
     }
 };
 exports.AdminAuthController = AdminAuthController;
@@ -73,6 +96,60 @@ __decorate([
     __metadata("design:paramtypes", [admin_dto_1.ResetPasswordDto]),
     __metadata("design:returntype", Promise)
 ], AdminAuthController.prototype, "resetPassword", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new roles_guard_1.RolesGuard('admin')),
+    (0, common_1.Get)('dashboard/stats'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AdminAuthController.prototype, "getStats", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new roles_guard_1.RolesGuard('admin')),
+    (0, common_1.Get)('institutions'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AdminAuthController.prototype, "getInstitutions", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new roles_guard_1.RolesGuard('admin')),
+    (0, common_1.Put)('institution/:id/status'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('status')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], AdminAuthController.prototype, "updateInstitutionStatus", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new roles_guard_1.RolesGuard('admin')),
+    (0, common_1.Get)('users'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AdminAuthController.prototype, "getUsers", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new roles_guard_1.RolesGuard('admin')),
+    (0, common_1.Put)('user/:id/verify'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('isVerified')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Boolean]),
+    __metadata("design:returntype", Promise)
+], AdminAuthController.prototype, "updateUserVerification", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new roles_guard_1.RolesGuard('admin')),
+    (0, common_1.Get)('shifts'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AdminAuthController.prototype, "getShifts", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, new roles_guard_1.RolesGuard('admin')),
+    (0, common_1.Put)('shift/:id/approve'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AdminAuthController.prototype, "approveShift", null);
 exports.AdminAuthController = AdminAuthController = __decorate([
     (0, common_1.Controller)('auth/admin'),
     __metadata("design:paramtypes", [admin_service_1.AdminAuthService])

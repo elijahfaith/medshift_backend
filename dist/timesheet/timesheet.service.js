@@ -80,6 +80,26 @@ let TimesheetService = class TimesheetService {
             throw new common_1.NotFoundException('Timesheet not found');
         return timesheet;
     }
+    async getTimesheetsByInstitution(institutionId) {
+        let query = {};
+        try {
+            const shifts = await this.shiftModel
+                .find({ organizationId: new mongoose_2.Types.ObjectId(institutionId) })
+                .select('_id')
+                .exec();
+            const shiftIds = shifts.map((s) => s._id);
+            query = { shiftId: { $in: shiftIds } };
+        }
+        catch (_) {
+            query = {};
+        }
+        return this.timesheetModel
+            .find(query)
+            .populate('shiftId')
+            .populate('professionalId', 'firstName lastName email phoneNumber profession rating profilePictureUrl')
+            .sort({ createdAt: -1 })
+            .exec();
+    }
 };
 exports.TimesheetService = TimesheetService;
 exports.TimesheetService = TimesheetService = __decorate([

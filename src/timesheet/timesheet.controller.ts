@@ -32,6 +32,11 @@ export class TimesheetController {
     );
   }
 
+  @Get('institution/:id')
+  async getByInstitution(@Param('id') institutionId: string) {
+    return this.timesheetService.getTimesheetsByInstitution(institutionId);
+  }
+
   @Put(':id/status')
   async updateStatus(
     @Param('id') id: string,

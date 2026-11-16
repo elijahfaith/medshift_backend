@@ -1,8 +1,10 @@
 import { InstitutionAuthService } from './institution.service';
-import { InstitutionRegisterDto, InstitutionLoginDto, VerifyOtpDto, ForgotPasswordDto, ResetPasswordDto, OnboardInstitutionDto } from './dto/institution.dto';
+import { CloudinaryService } from '../../common/cloudinary/cloudinary.service';
+import { InstitutionRegisterDto, InstitutionLoginDto, VerifyOtpDto, ForgotPasswordDto, ResetPasswordDto, OnboardInstitutionDto, UpdateInstitutionProfileDto } from './dto/institution.dto';
 export declare class InstitutionAuthController {
     private readonly institutionAuthService;
-    constructor(institutionAuthService: InstitutionAuthService);
+    private readonly cloudinaryService;
+    constructor(institutionAuthService: InstitutionAuthService, cloudinaryService: CloudinaryService);
     register(registerDto: InstitutionRegisterDto): Promise<{
         Token: string;
         InstitutionId: import("mongoose").Types.ObjectId;
@@ -40,5 +42,39 @@ export declare class InstitutionAuthController {
         message: string;
         InstitutionId: import("mongoose").Types.ObjectId;
         Status: string;
+    }>;
+    getProfile(req: any): Promise<{
+        id: import("mongoose").Types.ObjectId;
+        name: string;
+        email: string;
+        facilityType: string;
+        licenseNumber: string;
+        address: string;
+        phone: string;
+        isVerified: boolean;
+        status: string;
+        rating: number;
+        totalReviews: number;
+        logoUrl: string;
+        adminName: string;
+    }>;
+    updateProfile(req: any, updateDto: UpdateInstitutionProfileDto): Promise<{
+        id: import("mongoose").Types.ObjectId;
+        name: string;
+        email: string;
+        facilityType: string;
+        licenseNumber: string;
+        address: string;
+        phone: string;
+        isVerified: boolean;
+        status: string;
+        rating: number;
+        totalReviews: number;
+        logoUrl: string;
+        adminName: string;
+    }>;
+    uploadLogo(req: any, file: any): Promise<{
+        url: string;
+        filename: any;
     }>;
 }

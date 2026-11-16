@@ -200,12 +200,15 @@ export class UserAuthService {
       lastName: user.lastName,
       email: user.email,
       phoneNumber: user.phoneNumber || (user as any).phone,
+      profilePictureUrl: user.profilePictureUrl || null,
+      cvUrl: user.cvUrl || null,
+      hasPaidRegistrationFee: user.hasPaidRegistrationFee || false,
       professionalDetails: {
         id: user._id,
         profession: user.profession || 'Registered Nurse',
         specialty: user.specialty || 'General',
         isVerified: user.isVerified || false,
-        isListed: false, // Default to false until listing fee is paid
+        isListed: user.isListed || false,
         rating: user.rating || 0.0,
         shiftsCompleted: user.shiftsCompleted || 0
       }
@@ -223,6 +226,10 @@ export class UserAuthService {
     if (updateDto.phone !== undefined && updateDto.phone.trim() !== '') user.phoneNumber = updateDto.phone.trim();
     if (updateDto.profession !== undefined && updateDto.profession.trim() !== '') user.profession = updateDto.profession.trim();
     if (updateDto.specialty !== undefined && updateDto.specialty.trim() !== '') user.specialty = updateDto.specialty.trim();
+    if (updateDto.profilePictureUrl !== undefined) user.profilePictureUrl = updateDto.profilePictureUrl || '';
+    if (updateDto.cvUrl !== undefined) user.cvUrl = updateDto.cvUrl || '';
+    if (updateDto.hasPaidRegistrationFee !== undefined) user.hasPaidRegistrationFee = updateDto.hasPaidRegistrationFee;
+    if (updateDto.isListed !== undefined) user.isListed = updateDto.isListed;
 
     await user.save();
     return this.getProfile(userId);

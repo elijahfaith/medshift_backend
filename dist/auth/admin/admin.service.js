@@ -52,11 +52,23 @@ const mongoose_2 = require("mongoose");
 const jwt_1 = require("@nestjs/jwt");
 const bcrypt = __importStar(require("bcrypt"));
 const admin_schema_1 = require("./schemas/admin.schema");
+const institution_schema_1 = require("../institution/schemas/institution.schema");
+const user_schema_1 = require("../user/schemas/user.schema");
+const shift_schema_1 = require("../../shift/schemas/shift.schema");
+const report_schema_1 = require("../../report/schemas/report.schema");
 let AdminAuthService = class AdminAuthService {
     adminModel;
+    institutionModel;
+    userModel;
+    shiftModel;
+    reportModel;
     jwtService;
-    constructor(adminModel, jwtService) {
+    constructor(adminModel, institutionModel, userModel, shiftModel, reportModel, jwtService) {
         this.adminModel = adminModel;
+        this.institutionModel = institutionModel;
+        this.userModel = userModel;
+        this.shiftModel = shiftModel;
+        this.reportModel = reportModel;
         this.jwtService = jwtService;
     }
     async register(registerDto) {
@@ -173,12 +185,79 @@ let AdminAuthService = class AdminAuthService {
             Status: admin.status,
         };
     }
+    async getDashboardOverview() {
+        const [activeProsCount, pendingProsCount, verifiedInstitutionsCount, pendingInstitutionsCount, shifts, reportsCount,] = await Promise.all([
+            this.userModel.countDocuments({ isVerified: true }),
+            this.userModel.countDocuments({ isVerified: false }),
+            this.institutionModel.countDocuments({ status: 'Active' }),
+            this.institutionModel.countDocuments({ status: { $in: ['UnderReview', 'PendingVerification'] } }),
+            this.shiftModel.find().select('estimatedTotal hourlyRate status').exec(),
+            this.reportModel.countDocuments({ status: 'Pending Review' }),
+        ]);
+        const totalEscrow = shifts
+            .filter((s) => s.status !== 'Completed' && s.status !== 'Cancelled')
+            .reduce((sum, s) => sum + (s.estimatedTotal || 0), 0);
+        return {
+            activeProfessionals: activeProsCount,
+            pendingVerifications: pendingProsCount + pendingInstitutionsCount,
+            escrowHeld: totalEscrow,
+            reportedJobsQueue: reportsCount,
+            totalInstitutions: verifiedInstitutionsCount + pendingInstitutionsCount,
+        };
+    }
+    async getAllInstitutions() {
+        return this.institutionModel
+            .find()
+            .select('-passwordHash -otp -otpExpiry')
+            .sort({ createdAt: -1 })
+            .exec();
+    }
+    async updateInstitutionStatus(institutionId, status) {
+        const inst = await this.institutionModel.findByIdAndUpdate(institutionId, { status, isVerified: status === 'Active' || status === 'Verified' }, { new: true }).select('-passwordHash -otp -otpExpiry');
+        if (!inst)
+            throw new common_1.NotFoundException('Institution not found');
+        return inst;
+    }
+    async getAllUsers() {
+        return this.userModel
+            .find()
+            .select('-passwordHash -otp -otpExpiry')
+            .sort({ createdAt: -1 })
+            .exec();
+    }
+    async updateUserVerification(userId, isVerified) {
+        const user = await this.userModel.findByIdAndUpdate(userId, { isVerified }, { new: true }).select('-passwordHash -otp -otpExpiry');
+        if (!user)
+            throw new common_1.NotFoundException('User not found');
+        return user;
+    }
+    async getAllShifts() {
+        return this.shiftModel
+            .find()
+            .populate('organizationId', 'name facilityType address')
+            .sort({ createdAt: -1 })
+            .exec();
+    }
+    async approveShiftListing(shiftId) {
+        const shift = await this.shiftModel.findByIdAndUpdate(shiftId, { status: 'Open' }, { new: true });
+        if (!shift)
+            throw new common_1.NotFoundException('Shift not found');
+        return shift;
+    }
 };
 exports.AdminAuthService = AdminAuthService;
 exports.AdminAuthService = AdminAuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(admin_schema_1.Admin.name)),
+    __param(1, (0, mongoose_1.InjectModel)(institution_schema_1.Institution.name)),
+    __param(2, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
+    __param(3, (0, mongoose_1.InjectModel)(shift_schema_1.Shift.name)),
+    __param(4, (0, mongoose_1.InjectModel)(report_schema_1.Report.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
+        mongoose_2.Model,
         jwt_1.JwtService])
 ], AdminAuthService);
 //# sourceMappingURL=admin.service.js.map

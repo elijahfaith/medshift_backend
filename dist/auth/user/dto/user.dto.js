@@ -159,6 +159,9 @@ class UpdateProfileDto {
     profession;
     specialty;
     profilePictureUrl;
+    cvUrl;
+    hasPaidRegistrationFee;
+    isListed;
 }
 exports.UpdateProfileDto = UpdateProfileDto;
 __decorate([
@@ -191,4 +194,19 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", Object)
 ], UpdateProfileDto.prototype, "profilePictureUrl", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", Object)
+], UpdateProfileDto.prototype, "cvUrl", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateProfileDto.prototype, "hasPaidRegistrationFee", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateProfileDto.prototype, "isListed", void 0);
 //# sourceMappingURL=user.dto.js.map

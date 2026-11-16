@@ -98,6 +98,19 @@ export class ShiftService {
       .exec();
   }
 
+  async hireApplicant(applicationId: string) {
+    const application = await this.applicantModel.findById(applicationId);
+    if (!application) throw new NotFoundException('Application not found');
+    application.status = 'Hired';
+    await application.save();
+
+    await this.shiftModel.findByIdAndUpdate(application.shiftId, {
+      status: 'Filled',
+      assignedProfessionalId: application.professionalId,
+    });
+    return application;
+  }
+
   async getUpcomingShiftsForProfessional(professionalId: string) {
     // Return shifts where professional has applied. In a real app, you might filter by status: 'Approved'
     return this.applicantModel

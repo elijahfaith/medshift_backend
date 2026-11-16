@@ -46,6 +46,9 @@ let ShiftController = class ShiftController {
     async getApplicants(id) {
         return this.shiftService.getApplicantsForShift(id);
     }
+    async hireApplicant(id) {
+        return this.shiftService.hireApplicant(id);
+    }
     async getUpcomingShifts(professionalId) {
         return this.shiftService.getUpcomingShiftsForProfessional(professionalId);
     }
@@ -113,6 +116,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ShiftController.prototype, "getApplicants", null);
+__decorate([
+    (0, common_1.Post)('application/:id/hire'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ShiftController.prototype, "hireApplicant", null);
 __decorate([
     (0, common_1.Get)('upcoming/:professionalId'),
     __param(0, (0, common_1.Param)('professionalId')),

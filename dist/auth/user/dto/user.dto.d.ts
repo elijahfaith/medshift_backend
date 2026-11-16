@@ -36,4 +36,7 @@ export declare class UpdateProfileDto {
     profession?: string;
     specialty?: string;
     profilePictureUrl?: string | null;
+    cvUrl?: string | null;
+    hasPaidRegistrationFee?: boolean;
+    isListed?: boolean;
 }

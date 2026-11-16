@@ -203,6 +203,49 @@ let InstitutionAuthService = class InstitutionAuthService {
             Status: inst.status,
         };
     }
+    async getProfile(institutionId) {
+        const inst = await this.institutionModel.findById(institutionId);
+        if (!inst) {
+            throw new common_1.UnauthorizedException('Institution not found');
+        }
+        return {
+            id: inst._id,
+            name: inst.name,
+            email: inst.email,
+            facilityType: inst.facilityType,
+            licenseNumber: inst.licenseNumber || '',
+            address: inst.address || '',
+            phone: inst.phoneNumber || '',
+            isVerified: inst.isVerified || false,
+            status: inst.status,
+            rating: inst.rating || 0.0,
+            totalReviews: inst.totalReviews || 0,
+            logoUrl: inst.logoUrl || '',
+            adminName: inst.adminName || '',
+        };
+    }
+    async updateProfile(institutionId, updates) {
+        const inst = await this.institutionModel.findById(institutionId);
+        if (!inst) {
+            throw new common_1.UnauthorizedException('Institution not found');
+        }
+        if (updates.name !== undefined && updates.name.trim() !== '')
+            inst.name = updates.name.trim();
+        if (updates.facilityType !== undefined && updates.facilityType.trim() !== '')
+            inst.facilityType = updates.facilityType.trim();
+        if (updates.licenseNumber !== undefined)
+            inst.licenseNumber = updates.licenseNumber.trim();
+        if (updates.address !== undefined)
+            inst.address = updates.address.trim();
+        if (updates.phone !== undefined)
+            inst.phoneNumber = updates.phone.trim();
+        if (updates.adminName !== undefined)
+            inst.adminName = updates.adminName.trim();
+        if (updates.logoUrl !== undefined)
+            inst.logoUrl = updates.logoUrl.trim();
+        await inst.save();
+        return this.getProfile(institutionId);
+    }
 };
 exports.InstitutionAuthService = InstitutionAuthService;
 exports.InstitutionAuthService = InstitutionAuthService = __decorate([

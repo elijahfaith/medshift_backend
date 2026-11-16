@@ -44,4 +44,34 @@ export declare class InstitutionAuthService {
         InstitutionId: import("mongoose").Types.ObjectId;
         Status: string;
     }>;
+    getProfile(institutionId: string): Promise<{
+        id: import("mongoose").Types.ObjectId;
+        name: string;
+        email: string;
+        facilityType: string;
+        licenseNumber: string;
+        address: string;
+        phone: string;
+        isVerified: boolean;
+        status: string;
+        rating: number;
+        totalReviews: number;
+        logoUrl: string;
+        adminName: string;
+    }>;
+    updateProfile(institutionId: string, updates: any): Promise<{
+        id: import("mongoose").Types.ObjectId;
+        name: string;
+        email: string;
+        facilityType: string;
+        licenseNumber: string;
+        address: string;
+        phone: string;
+        isVerified: boolean;
+        status: string;
+        rating: number;
+        totalReviews: number;
+        logoUrl: string;
+        adminName: string;
+    }>;
 }

@@ -212,12 +212,15 @@ let UserAuthService = class UserAuthService {
             lastName: user.lastName,
             email: user.email,
             phoneNumber: user.phoneNumber || user.phone,
+            profilePictureUrl: user.profilePictureUrl || null,
+            cvUrl: user.cvUrl || null,
+            hasPaidRegistrationFee: user.hasPaidRegistrationFee || false,
             professionalDetails: {
                 id: user._id,
                 profession: user.profession || 'Registered Nurse',
                 specialty: user.specialty || 'General',
                 isVerified: user.isVerified || false,
-                isListed: false,
+                isListed: user.isListed || false,
                 rating: user.rating || 0.0,
                 shiftsCompleted: user.shiftsCompleted || 0
             }
@@ -238,6 +241,14 @@ let UserAuthService = class UserAuthService {
             user.profession = updateDto.profession.trim();
         if (updateDto.specialty !== undefined && updateDto.specialty.trim() !== '')
             user.specialty = updateDto.specialty.trim();
+        if (updateDto.profilePictureUrl !== undefined)
+            user.profilePictureUrl = updateDto.profilePictureUrl || '';
+        if (updateDto.cvUrl !== undefined)
+            user.cvUrl = updateDto.cvUrl || '';
+        if (updateDto.hasPaidRegistrationFee !== undefined)
+            user.hasPaidRegistrationFee = updateDto.hasPaidRegistrationFee;
+        if (updateDto.isListed !== undefined)
+            user.isListed = updateDto.isListed;
         await user.save();
         return this.getProfile(userId);
     }

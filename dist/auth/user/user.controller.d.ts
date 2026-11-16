@@ -1,8 +1,10 @@
 import { UserAuthService } from './user.service';
+import { CloudinaryService } from '../../common/cloudinary/cloudinary.service';
 import { UserRegisterDto, UserLoginDto, VerifyOtpDto, ForgotPasswordDto, ResetPasswordDto, ChangePasswordDto, UpdateProfileDto } from './dto/user.dto';
 export declare class UserAuthController {
     private readonly userAuthService;
-    constructor(userAuthService: UserAuthService);
+    private readonly cloudinaryService;
+    constructor(userAuthService: UserAuthService, cloudinaryService: CloudinaryService);
     register(registerDto: UserRegisterDto): Promise<{
         Token: string;
         UserId: import("mongoose").Types.ObjectId;
@@ -46,6 +48,9 @@ export declare class UserAuthController {
         lastName: string;
         email: string;
         phoneNumber: any;
+        profilePictureUrl: string | null;
+        cvUrl: string | null;
+        hasPaidRegistrationFee: boolean;
         professionalDetails: {
             id: import("mongoose").Types.ObjectId;
             profession: string;
@@ -56,12 +61,15 @@ export declare class UserAuthController {
             shiftsCompleted: number;
         };
     }>;
-    updateProfile(req: any, updateDto: UpdateProfileDto): Promise<{
+    updateProfile(req: any, updateProfileDto: UpdateProfileDto): Promise<{
         id: import("mongoose").Types.ObjectId;
         firstName: string;
         lastName: string;
         email: string;
         phoneNumber: any;
+        profilePictureUrl: string | null;
+        cvUrl: string | null;
+        hasPaidRegistrationFee: boolean;
         professionalDetails: {
             id: import("mongoose").Types.ObjectId;
             profession: string;
@@ -77,9 +85,11 @@ export declare class UserAuthController {
     }>;
     uploadCv(req: any, file: any): Promise<{
         url: string;
+        filename: any;
     }>;
     uploadProfilePicture(req: any, file: any): Promise<{
         url: string;
+        filename: any;
     }>;
     verifyPayment(req: any, body: {
         reference: string;

@@ -96,6 +96,18 @@ let ShiftService = class ShiftService {
             .populate('professionalId')
             .exec();
     }
+    async hireApplicant(applicationId) {
+        const application = await this.applicantModel.findById(applicationId);
+        if (!application)
+            throw new common_1.NotFoundException('Application not found');
+        application.status = 'Hired';
+        await application.save();
+        await this.shiftModel.findByIdAndUpdate(application.shiftId, {
+            status: 'Filled',
+            assignedProfessionalId: application.professionalId,
+        });
+        return application;
+    }
     async getUpcomingShiftsForProfessional(professionalId) {
         return this.applicantModel
             .find({ professionalId: new mongoose_2.Types.ObjectId(professionalId) })

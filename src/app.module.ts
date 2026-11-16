@@ -16,9 +16,11 @@ import { WalletModule } from './wallet/wallet.module';
 import { JwtStrategy } from './auth/guards/jwt.strategy';
 import { ReviewModule } from './review/review.module';
 import { ReportModule } from './report/report.module';
+import { CloudinaryModule } from './common/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
+    CloudinaryModule,
     MongooseModule.forRoot(
       process.env.MONGO_URI || 'mongodb://localhost:27017/medshift',
     ),

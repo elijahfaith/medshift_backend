@@ -49,6 +49,9 @@ export declare class UserAuthService {
         lastName: string;
         email: string;
         phoneNumber: any;
+        profilePictureUrl: string | null;
+        cvUrl: string | null;
+        hasPaidRegistrationFee: boolean;
         professionalDetails: {
             id: import("mongoose").Types.ObjectId;
             profession: string;
@@ -65,6 +68,9 @@ export declare class UserAuthService {
         lastName: string;
         email: string;
         phoneNumber: any;
+        profilePictureUrl: string | null;
+        cvUrl: string | null;
+        hasPaidRegistrationFee: boolean;
         professionalDetails: {
             id: import("mongoose").Types.ObjectId;
             profession: string;

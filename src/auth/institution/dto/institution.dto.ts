@@ -110,3 +110,33 @@ export class OnboardInstitutionDto {
   @IsString()
   address: string;
 }
+
+export class UpdateInstitutionProfileDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  facilityType?: string;
+
+  @IsOptional()
+  @IsString()
+  licenseNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @IsOptional()
+  @IsString()
+  phone?: string;
+
+  @IsOptional()
+  @IsString()
+  adminName?: string;
+
+  @IsOptional()
+  @IsString()
+  logoUrl?: string;
+}

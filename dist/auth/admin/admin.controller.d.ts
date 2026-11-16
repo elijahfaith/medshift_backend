@@ -39,4 +39,53 @@ export declare class AdminAuthController {
     resetPassword(resetPasswordDto: ResetPasswordDto): Promise<{
         message: string;
     }>;
+    getStats(): Promise<{
+        activeProfessionals: number;
+        pendingVerifications: number;
+        escrowHeld: number;
+        reportedJobsQueue: number;
+        totalInstitutions: number;
+    }>;
+    getInstitutions(): Promise<(import("mongoose").Document<unknown, {}, import("../institution/schemas/institution.schema").InstitutionDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../institution/schemas/institution.schema").Institution & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    })[]>;
+    updateInstitutionStatus(id: string, status: string): Promise<import("mongoose").Document<unknown, {}, import("../institution/schemas/institution.schema").InstitutionDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../institution/schemas/institution.schema").Institution & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    }>;
+    getUsers(): Promise<(import("mongoose").Document<unknown, {}, import("../user/schemas/user.schema").UserDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../user/schemas/user.schema").User & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    })[]>;
+    updateUserVerification(id: string, isVerified: boolean): Promise<import("mongoose").Document<unknown, {}, import("../user/schemas/user.schema").UserDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../user/schemas/user.schema").User & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    }>;
+    getShifts(): Promise<(import("mongoose").Document<unknown, {}, import("../../shift/schemas/shift.schema").ShiftDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../../shift/schemas/shift.schema").Shift & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    })[]>;
+    approveShift(id: string): Promise<import("mongoose").Document<unknown, {}, import("../../shift/schemas/shift.schema").ShiftDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../../shift/schemas/shift.schema").Shift & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    }>;
 }

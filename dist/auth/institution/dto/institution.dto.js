@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OnboardInstitutionDto = exports.ResetPasswordDto = exports.ForgotPasswordDto = exports.VerifyOtpDto = exports.InstitutionLoginDto = exports.InstitutionRegisterDto = void 0;
+exports.UpdateInstitutionProfileDto = exports.OnboardInstitutionDto = exports.ResetPasswordDto = exports.ForgotPasswordDto = exports.VerifyOtpDto = exports.InstitutionLoginDto = exports.InstitutionRegisterDto = void 0;
 const class_validator_1 = require("class-validator");
 class InstitutionRegisterDto {
     firstName;
@@ -161,4 +161,49 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], OnboardInstitutionDto.prototype, "address", void 0);
+class UpdateInstitutionProfileDto {
+    name;
+    facilityType;
+    licenseNumber;
+    address;
+    phone;
+    adminName;
+    logoUrl;
+}
+exports.UpdateInstitutionProfileDto = UpdateInstitutionProfileDto;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateInstitutionProfileDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateInstitutionProfileDto.prototype, "facilityType", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateInstitutionProfileDto.prototype, "licenseNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateInstitutionProfileDto.prototype, "address", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateInstitutionProfileDto.prototype, "phone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateInstitutionProfileDto.prototype, "adminName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateInstitutionProfileDto.prototype, "logoUrl", void 0);
 //# sourceMappingURL=institution.dto.js.map

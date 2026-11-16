@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { PaystackService } from './paystack.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('payment')
 export class PaystackController {
@@ -23,10 +24,9 @@ export class PaystackController {
     return config;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, new RolesGuard('admin'))
   @Post('registration-fee')
   async updateRegistrationFee(@Body() body: { amountNaira: number }) {
-    // In a real app, check if user is admin here
     await this.paystackService.updateRegistrationFee(body.amountNaira);
     return { success: true, newAmountNaira: body.amountNaira };
   }

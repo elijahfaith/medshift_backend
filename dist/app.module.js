@@ -25,12 +25,14 @@ const wallet_module_1 = require("./wallet/wallet.module");
 const jwt_strategy_1 = require("./auth/guards/jwt.strategy");
 const review_module_1 = require("./review/review.module");
 const report_module_1 = require("./report/report.module");
+const cloudinary_module_1 = require("./common/cloudinary/cloudinary.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            cloudinary_module_1.CloudinaryModule,
             mongoose_1.MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/medshift'),
             throttler_1.ThrottlerModule.forRoot([
                 {
