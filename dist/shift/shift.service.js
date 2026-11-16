@@ -39,7 +39,13 @@ let ShiftService = class ShiftService {
         const { page = 1, limit = 10 } = paginationQuery;
         const skip = (page - 1) * limit;
         const [data, total] = await Promise.all([
-            this.shiftModel.find().skip(skip).limit(limit).exec(),
+            this.shiftModel
+                .find()
+                .populate('organizationId')
+                .skip(skip)
+                .limit(limit)
+                .sort({ createdAt: -1 })
+                .exec(),
             this.shiftModel.countDocuments().exec(),
         ]);
         return {
